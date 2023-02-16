@@ -1,4 +1,3 @@
-from threading import Thread
 from config.config import Config
 from controller.controller_service import Controller_service
 from network.network_config import Network_config
