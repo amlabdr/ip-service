@@ -1,0 +1,18 @@
+{
+    "PORT":{
+        "UPDATE":[]
+    },
+    "VLAN":{
+        "CREATE":[],
+        "DELETE":[],
+        "UPDATE":[]
+    },
+    "INTERFACE":{
+        "UPDATE":[]
+    },
+    "IPV4":{
+        "CREATE":[],
+        "DELETE":[],
+        "UPDATE":[]
+    }
+}

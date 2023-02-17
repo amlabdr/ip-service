@@ -43,7 +43,7 @@ class httpHandller(BaseHTTPRequestHandler):
             self.wfile.write("POST request for {}".format(self.path).encode('utf-8'))
 
             logging.info("now will call config in network")
-            self.network.config_network(network_config, self.cfg)
+            self.network.config_network(network_config)
             
         else:
             logging.info("POST request a not available path,\nPath: %s\nHeaders:\n%s\n\nBody:\n%s\n",

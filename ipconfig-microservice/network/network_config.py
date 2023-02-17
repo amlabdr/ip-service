@@ -5,7 +5,7 @@ from ncclient.operations import RPCError
 class Network_config:
     def __init__(self):
         self.topology = {}
-        self.operation_translator={"CREATE":"create", "DELETE":"delete", "UPDATE":"replace", "MERGE":"merge"}
+        self.action_translator={"CREATE":"create", "DELETE":"delete", "UPDATE":"replace", "MERGE":"merge"}
         self.netconf_xml_templates = os.environ.get('NETCONF_XML_TEMPLATES', 'ipconfig-microservice/network/ocnos_service/xml_templates/')
     
     def fill_xml_template(self,template_file, configuration):
@@ -13,10 +13,21 @@ class Network_config:
         with open(template_file, "r") as f:
             xml_template = f.read()
         
-        operation = self.operation_translator[configuration["operation"]]
-        xml_template = re.sub("{operation}",operation , xml_template)
+        action = self.action_translator[configuration["action"]]
+        xml_template = re.sub("{operation}",action , xml_template)
         for param, value in configuration["content"].items():
-            xml_template = re.sub(f"{{{param}}}", str(value), xml_template)
+            if type(value)==list:
+                pattern = r'\{(.*)\{'+param+r'\}(.*)\}'
+                # Find the trunk-vlans field in the XML input using regex
+                match = re.search(pattern, xml_template)
+                if match:
+                    new_content = ''
+                    for element in value:
+                        new_content += re.sub(f"{{{param}}}", str(element), match.group()[1:-1])
+                    # Replace the old trunk-vlans field with the updated one
+                    xml_template = re.sub(pattern, new_content, xml_template)
+            else:
+                xml_template = re.sub(f"{{{param}}}", str(value), xml_template)
         return xml_template
 
     def fill_xml_config(self,config):
@@ -24,6 +35,7 @@ class Network_config:
         with open(self.netconf_xml_templates+"config.xml", "r") as f:
             xml_template = f.read()
         xml_template = re.sub("{configuration}", config, xml_template)
+        print(xml_template)
         return xml_template
 
     def get_topology(self,config):
@@ -31,9 +43,10 @@ class Network_config:
         for node in config.network_targets.get_nodes():
             self.topology[node.get_name().replace('"','')] = node.obj_dict["attributes"]
 
-    def config_network(self, network_config, backup = False):
-        device = network_config["content"]["host"]
-        if (network_config["content"]["host"] in self.topology ):
+    def config_network(self, event, backup = False):
+        device = event["content"]["host"]
+        configuration=event
+        if (configuration["content"]["host"] in self.topology ):
             try:
                 # Connect to the netconf server
                 netconfClient = manager.connect(
@@ -42,7 +55,6 @@ class Network_config:
                     username=self.topology[device]['username'].replace('"',''),
                     password=self.topology[device]['password'].replace('"',''),
                     hostkey_verify=False,)
-                configuration=copy.deepcopy(network_config)
                 del configuration["content"]["host"]
                 xml_obj = ""
                 template_file = self.netconf_xml_templates+configuration["resource"]+"/"+configuration["resource"]+".xml"
