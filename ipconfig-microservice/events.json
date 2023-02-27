@@ -12,9 +12,10 @@
         "resource":"PORT",
         "content":{
            "host": "dcqnet-nist-ctrl-01",
-           "speed":"xe1",
+           "name":"xe1",
+           "speed":"100",
            "mtu":"1500",
-           "admin_status": "UP|DOWN"
+           "adminStatus": "UP|DOWN"
            }
         },
     "VLAN":{
@@ -22,9 +23,9 @@
         "resource":"VLAN",
         "content":{
            "host": "dcqnet-nist-ctrl-01",
-           "bridge":"1",
-           "vlan_id":"2",
-           "vlan_name":"vlan2"
+           "bridgeGroup":"1",
+           "vlanId":"2",
+           "vlanName":"vlan2"
            }
         },
     "VLAN_MEMBER":{
@@ -32,11 +33,11 @@
         "resource":"VLAN_MEMBER",
         "content":{
            "host": "dcqnet-nist-ctrl-01",
-           "vlan_id":[2,33],
-           "interface_name":"xe1",
-           "bridge_group":"1",
+           "vlanIds":[2,33],
+           "interfaceName":"xe1",
+           "bridgeGroup":"1",
            "mode":"trunk|access",
-           "default_vlan":"2"
+           "defaultVlan":"2"
            }
         },
     "INTERFACE":{
@@ -45,8 +46,8 @@
         "content":{
             "host": "dcqnet-nist-ctrl-01",
             "name":"xe1",
-            "ip_address":"10.11.201.99",
-            "prefix_length":"24"
+            "address":"10.11.201.99",
+            "mask":"24"
             }
         },
     "SVI":{
@@ -54,9 +55,10 @@
         "resource":"SVI",
         "content":{
             "host": "dcqnet-nist-ctrl-01",
-            "vlan_id":"3",
-            "bridge_group":"1",
-            "ip_address":"10.11.209.1/24"
+            "vlanId":"3",
+            "bridgeGroup":"1",
+            "address":"10.11.209.1",
+            "mask":"24"
             }
         }
 }

@@ -19,13 +19,18 @@ class Network_config:
             if type(value)==list:
                 pattern = r'\{(.*)\{'+param+r'\}(.*)\}'
                 # Find the trunk-vlans field in the XML input using regex
-                match = re.search(pattern, xml_template)
-                if match:
+                #match = re.search(pattern, xml_template)
+                matches = []
+
+                for match in re.finditer(pattern, xml_template):
+                    matches.append(match.group())
+                print(matches)
+                for match in matches:
                     new_content = ''
                     for element in value:
-                        new_content += re.sub(f"{{{param}}}", str(element), match.group()[1:-1])
+                        new_content += re.sub(f"{{{param}}}", str(element), match[1:-1])
                     # Replace the old trunk-vlans field with the updated one
-                    xml_template = re.sub(pattern, new_content, xml_template)
+                    xml_template = re.sub(match, new_content, xml_template)
             else:
                 xml_template = re.sub(f"{{{param}}}", str(value), xml_template)
         return xml_template

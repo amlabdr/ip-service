@@ -1,8 +1,33 @@
+<network-instances xmlns="http://openconfig.net/yang/network-instance">
+     <network-instance>
+          <name>{bridgeGroup}</name>
+          <config>
+               <name>{bridgeGroup}</name>
+               <type xmlns:oc-ni-types="http://openconfig.net/yang/network-instance-types">
+                    oc-ni-types:L2L3</type>
+               <enabled>true</enabled>
+               <bridge-protocol xmlns="http://www.ipinfusion.com/yang/ocnos/ipi-oc-ni-augments">
+                    ieee-vlan-bridge</bridge-protocol>
+          </config>
+          <vlans>
+               {<vlan><vlan-id>{vlanIds}</vlan-id><config><vlan-id>{vlanIds}</vlan-id><status>ACTIVE</status></config></vlan>}
+          </vlans>
+          <interfaces>
+               <interface>
+                    <id>{interfaceName}</id>
+                    <config>
+                         <interface>{interfaceName}</interface>
+                         <id>{interfaceName}</id>
+                    </config>
+               </interface>
+          </interfaces>
+     </network-instance>
+</network-instances>
 <interfaces xmlns="http://openconfig.net/yang/interfaces">
      <interface operation="{operation}">
-          <name>{interface_name}</name>
+          <name>{interfaceName}</name>
           <config>
-               <name>{interface_name}</name>
+               <name>{interfaceName}</name>
                <tpid xmlns="http://openconfig.net/yang/vlan">TPID_0X8100</tpid>
                <type xmlns:ianaift="urn:ietf:params:xml:ns:yang:iana-if-type">ianaift:ethernetCsmacd</type>
           </config>
@@ -10,7 +35,7 @@
                <switched-vlan xmlns="http://openconfig.net/yang/vlan">
                     <config>
                          <interface-mode>ACCESS</interface-mode>
-                         {<access-vlan>{vlan_id}</access-vlan>}
+                         {<access-vlan>{vlanIds}</access-vlan>}
                     </config>
                </switched-vlan>
           </ethernet>

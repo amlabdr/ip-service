@@ -1,17 +1,17 @@
     <network-instances xmlns="http://openconfig.net/yang/network-instance">
         <network-instance>
-            <name>{bridge}</name>
+            <name>{bridgeGroup}</name>
             <config>
-                <name>{bridge}</name>
+                <name>{bridgeGroup}</name>
                 <type xmlns:oc-ni-types="http://openconfig.net/yang/network-instance-types">oc-ni-types:L2L3</type>
                 <enabled>true</enabled>
             </config>
             <vlans>
                 <vlan  operation = "{operation}">
-                    <vlan-id>{vlan_id}</vlan-id>
+                    <vlan-id>{vlanId}</vlan-id>
                     <config>
-                        <vlan-id>{vlan_id}</vlan-id>
-                        <name>{vlan_name}</name>
+                        <vlan-id>{vlanId}</vlan-id>
+                        <name>{vlanName}</name>
                         <status>ACTIVE</status>
                     </config>
                 </vlan>
