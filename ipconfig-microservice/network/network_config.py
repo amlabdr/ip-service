@@ -1,4 +1,4 @@
-import os, logging, traceback, re, copy
+import os, logging, traceback, re, json, copy
 from ncclient import manager
 from ncclient.operations import RPCError
 
@@ -53,6 +53,19 @@ class Network_config:
         else:
             template_file = self.netconf_xml_templates+"/"+configuration["resource"]+".xml"
         return template_file
+    def get_config_list(self, configuration):
+        config_list = []
+        if configuration["resource"] == "INTERFACE" and configuration["action"] == "UPDATE":
+            configuration["action"] = "DELETE"
+            print(configuration)
+            config_list.append(copy.deepcopy(configuration))
+            configuration["action"] = "CREATE"
+            config_list.append(copy.deepcopy(configuration))
+        elif configuration["resource"] == "SVI":
+            pass
+        else:
+            config_list.append(configuration)
+        return config_list
 
     def config_network(self, event, backup = False):
         device = event["content"]["host"]
@@ -67,24 +80,27 @@ class Network_config:
                     password=self.topology[device]['password'].replace('"',''),
                     hostkey_verify=False,)
                 del configuration["content"]["host"]
-                xml_obj = ""
-                template_file = self.get_template_file(configuration)
-                xml_obj += self.fill_xml_template(template_file, configuration)
-                xml_configuration=self.fill_xml_config(xml_obj)
-                try:
-                    reply = netconfClient.edit_config(target="candidate", config=xml_configuration)
-                    print(reply)
-                except Exception as e:
-                    print(traceback.format_exc())
-                    print(e)
-                    logging.error(f"Error editing configuration: {e}")
+                config_list = self.get_config_list(configuration)
+                print(config_list)
+                for configuration in config_list:
+                    xml_obj = ""
+                    template_file = self.get_template_file(configuration)
+                    xml_obj += self.fill_xml_template(template_file, configuration)
+                    xml_configuration=self.fill_xml_config(xml_obj)
+                    try:
+                        reply = netconfClient.edit_config(target="candidate", config=xml_configuration)
+                        print(reply)
+                    except Exception as e:
+                        print(traceback.format_exc())
+                        print(e)
+                        logging.error(f"Error editing configuration: {e}")
 
-                # Commit the changes and save them to the running configuration
-                try:
-                    netconfClient.commit()
-                    
-                except RPCError as e:
-                    logging.error(f"Error committing and saving changes: {e}")
-                    netconfClient.discard_changes()
+                    # Commit the changes and save them to the running configuration
+                    try:
+                        netconfClient.commit()
+                        
+                    except RPCError as e:
+                        logging.error(f"Error committing and saving changes: {e}")
+                        netconfClient.discard_changes()
             except Exception as e:
                 logging.error(f"Error: {e}")
