@@ -1,0 +1,29 @@
+<interfaces xmlns="http://openconfig.net/yang/interfaces">
+    <interface>
+        <name>{interface_name}</name>
+        <config>
+            <name>{interface_name}</name>
+            <enabled>true</enabled>
+            <type xmlns:ianaift="urn:ietf:params:xml:ns:yang:iana-iftype">ianaift:ethernetCsmacd</type>
+        </config>
+        <subinterfaces  operation="{operation}">
+            <subinterface>
+                <index>0</index>
+                <ipv4 xmlns="http://openconfig.net/yang/interfaces/ip">
+                    <addresses>
+                        <address>
+                            <ip>{ip_address}</ip>
+                            <config>
+                                <ip>{ip_address}</ip>
+                                <prefix-length>{prefix_length}</prefix-length>
+                            </config>
+                        </address>
+                    </addresses>
+                </ipv4>
+                <config>
+                    <index>0</index>
+                </config>
+            </subinterface>
+        </subinterfaces>
+    </interface>
+</interfaces>

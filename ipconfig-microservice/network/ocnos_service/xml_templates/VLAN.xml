@@ -8,10 +8,10 @@
             </config>
             <vlans>
                 <vlan  operation = "{operation}">
-                    <vlan-id>{vlan-id}</vlan-id>
+                    <vlan-id>{vlan_id}</vlan-id>
                     <config>
-                        <vlan-id>{vlan-id}</vlan-id>
-                        <name>{name}</name>
+                        <vlan-id>{vlan_id}</vlan-id>
+                        <name>{vlan_name}</name>
                         <status>ACTIVE</status>
                     </config>
                 </vlan>

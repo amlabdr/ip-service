@@ -1,0 +1,62 @@
+{
+    "BRIDGE_GROUP":{
+        "action":"CREATE|DELETE",
+        "resource":"BRIDGE_GROUP",
+        "content":{
+           "host": "dcqnet-nist-ctrl-01",
+           "name":"1"
+           }
+        },
+    "PORT":{
+        "action":"UPDATE",
+        "resource":"PORT",
+        "content":{
+           "host": "dcqnet-nist-ctrl-01",
+           "speed":"xe1",
+           "mtu":"1500",
+           "admin_status": "UP|DOWN"
+           }
+        },
+    "VLAN":{
+        "action":"CREATE|DELETE|UPDATE",
+        "resource":"VLAN",
+        "content":{
+           "host": "dcqnet-nist-ctrl-01",
+           "bridge":"1",
+           "vlan_id":"2",
+           "vlan_name":"vlan2"
+           }
+        },
+    "VLAN_MEMBER":{
+        "action":"UPDATE",
+        "resource":"VLAN_MEMBER",
+        "content":{
+           "host": "dcqnet-nist-ctrl-01",
+           "vlan_id":[2,33],
+           "interface_name":"xe1",
+           "bridge_group":"1",
+           "mode":"trunk|access",
+           "default_vlan":"2"
+           }
+        },
+    "INTERFACE":{
+        "action":"CREATE|DELETE|UPDATE",
+        "resource":"INTERFACE",
+        "content":{
+            "host": "dcqnet-nist-ctrl-01",
+            "name":"xe1",
+            "ip_address":"10.11.201.99",
+            "prefix_length":"24"
+            }
+        },
+    "SVI":{
+        "action":"CREATE|DELETE|UPDATE",
+        "resource":"SVI",
+        "content":{
+            "host": "dcqnet-nist-ctrl-01",
+            "vlan_id":"3",
+            "bridge_group":"1",
+            "ip_address":"10.11.209.1/24"
+            }
+        }
+}

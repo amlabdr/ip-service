@@ -1,16 +1,16 @@
 <interfaces xmlns="http://openconfig.net/yang/interfaces">
      <interface operation="{operation}">
-          <name>{interface-name}</name>
+          <name>{interface_name}</name>
           <config>
-               <name>{interface-name}</name>
+               <name>{interface_name}</name>
                <tpid xmlns="http://openconfig.net/yang/vlan">TPID_0X8100</tpid>
                <type xmlns:ianaift="urn:ietf:params:xml:ns:yang:iana-if-type">ianaift:ethernetCsmacd</type>
           </config>
           <ethernet xmlns="http://openconfig.net/yang/interfaces/ethernet">
                <switched-vlan xmlns="http://openconfig.net/yang/vlan">
                     <config>
-                         <interface-mode>{interface-mode}</interface-mode> 
-                         {<trunk-vlans>{vlan-id}</trunk-vlans>}
+                         <interface-mode>ACCESS</interface-mode>
+                         {<access-vlan>{vlan_id}</access-vlan>}
                     </config>
                </switched-vlan>
           </ethernet>

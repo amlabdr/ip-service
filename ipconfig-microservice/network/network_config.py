@@ -42,6 +42,12 @@ class Network_config:
         #get type of devices
         for node in config.network_targets.get_nodes():
             self.topology[node.get_name().replace('"','')] = node.obj_dict["attributes"]
+    def get_template_file(self, configuration):
+        if configuration["resource"] == "VLAN_MEMBER":
+            template_file = self.netconf_xml_templates+"/"+configuration["resource"]+"_"+configuration["content"]["mode"]+".xml"
+        else:
+            template_file = self.netconf_xml_templates+"/"+configuration["resource"]+".xml"
+        return template_file
 
     def config_network(self, event, backup = False):
         device = event["content"]["host"]
@@ -57,7 +63,7 @@ class Network_config:
                     hostkey_verify=False,)
                 del configuration["content"]["host"]
                 xml_obj = ""
-                template_file = self.netconf_xml_templates+configuration["resource"]+"/"+configuration["resource"]+".xml"
+                template_file = self.get_template_file(configuration)
                 xml_obj += self.fill_xml_template(template_file, configuration)
                 xml_configuration=self.fill_xml_config(xml_obj)
                 try:
