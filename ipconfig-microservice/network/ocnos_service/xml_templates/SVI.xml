@@ -1,0 +1,29 @@
+<interfaces xmlns="http://openconfig.net/yang/interfaces">
+    <interface>
+        <name>{bridgeGroup}</name>
+        <config>
+            <name>{bridgeGroup}</name>
+            <enabled>true</enabled>
+            <type xmlns:ianaift="urn:ietf:params:xml:ns:yang:iana-if-type">ianaift:l2vlan</type>
+        </config>
+        <subinterfaces>
+            <subinterface>
+                <index>{vlanId}</index>
+                <config>
+                    <index>{vlanId}</index>
+                </config>
+                <ipv4 xmlns="http://openconfig.net/yang/interfaces/ip" operation="{operation}">
+                    <addresses >
+                        <address >
+                            <ip>{address}</ip>
+                            <config>
+                                <ip>{address}</ip>
+                                <prefix-length>{mask}</prefix-length>
+                            </config>
+                        </address>
+                    </addresses>
+                </ipv4>
+            </subinterface>
+        </subinterfaces>
+    </interface>
+</interfaces>

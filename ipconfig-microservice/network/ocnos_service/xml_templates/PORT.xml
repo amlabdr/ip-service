@@ -1,0 +1,23 @@
+<interfaces xmlns="http://openconfig.net/yang/interfaces">
+    <interface>
+        <name>{name}</name>
+        <config>
+            <name>{name}</name>
+            <enabled>true</enabled>
+            <admin-status operation="{operation}">{adminStatus}</admin-status>
+            <mtu operation="{operation}">{mtu}</mtu>
+            <type xmlns:ianaift="urn:ietf:params:xml:ns:yang:iana-if-type">ianaift:ethernetCsmacd</type>
+            <tpid xmlns="http://openconfig.net/yang/vlan" xmlns:oc-vlan-types="http://openconfig.net/yang/vlan-types">oc-vlan-types:TPID_0X88A8</tpid>
+            <description operation="{operation}">{description}</description>
+            
+
+            
+        </config>
+        <ethernet xmlns="http://openconfig.net/yang/interfaces/ethernet">
+            <config>
+            <auto-negotiate>false</auto-negotiate>
+            <port-speed xmlns:oceth="http://openconfig.net/yang/interfaces/ethernet" operation="{operation}">oc-eth:SPEED_{speed}GB</port-speed>
+            </config>
+        </ethernet>
+    </interface>
+</interfaces>

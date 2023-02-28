@@ -55,7 +55,7 @@ class Network_config:
         return template_file
     def get_config_list(self, configuration):
         config_list = []
-        if configuration["resource"] == "INTERFACE" and configuration["action"] == "UPDATE":
+        if (configuration["resource"] == "INTERFACE" or configuration["resource"] == "SVI") and configuration["action"] == "UPDATE":
             configuration["action"] = "DELETE"
             print(configuration)
             config_list.append(copy.deepcopy(configuration))
