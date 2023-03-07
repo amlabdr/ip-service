@@ -9,9 +9,8 @@ import logging, json, traceback
 
 
 class httpHandller(BaseHTTPRequestHandler):
-    def init_network(self, network, cfg):
+    def init_network(self, network):
         self.network = network
-        self.cfg = cfg
     def _set_response(self):
         self.send_response(200)
         self.send_header('Content-type', 'text/html')

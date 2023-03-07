@@ -1,0 +1,11 @@
+<network-instances xmlns="http://openconfig.net/yang/network-instance">
+    <network-instance operation="{operation}">
+        <name>{name}</name>
+        <config>
+            <name>{name}</name>
+            <type xmlns:oc-ni-types="http://openconfig.net/yang/network-instance-types">
+                oc-ni-types:L2L3</type>
+            <enabled>true</enabled>
+        </config>
+    </network-instance>
+</network-instances>
