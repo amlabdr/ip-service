@@ -29,8 +29,8 @@ class Controller_service:
         logging.info('Stopping httpd...\n')
     
     def subscribe2events(self,network):
-        topic='topic://'+'/topology/events'
-        url = "localhost"
+        topic='topic://'+'topology.event'
+        url = "10.11.200.125:5672"
         logging.info("Agent will start lesstning for events from the controller")
         receiver = Receiver()
-        receiver.receive_specification(url,topic, network=network)
+        receiver.receive_event(url,topic, network=network)

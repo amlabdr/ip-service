@@ -1,8 +1,8 @@
 <interfaces xmlns="http://openconfig.net/yang/interfaces">
     <interface>
-        <name>{bridgeGroup}</name>
+        <name>vlan{bridgeGroup}</name>
         <config>
-            <name>{bridgeGroup}</name>
+            <name>vlan{bridgeGroup}</name>
             <enabled>true</enabled>
             <type xmlns:ianaift="urn:ietf:params:xml:ns:yang:iana-if-type">ianaift:l2vlan</type>
         </config>

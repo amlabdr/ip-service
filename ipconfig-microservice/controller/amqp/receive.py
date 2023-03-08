@@ -13,14 +13,14 @@ class Receiver():
     def __init__(self):
         super(Receiver, self).__init__()
         
-    def receive_specification(self, server, topic, network):
+    def receive_event(self, server, topic, network):
         print("will start the rcv")
-        Container(Specification_Receiver_handller(server,topic, network)).run()
+        Container(event_Receiver_handller(server,topic, network)).run()
 
 
-class Specification_Receiver_handller(MessagingHandler):
+class event_Receiver_handller(MessagingHandler):
     def __init__(self, server,topic, network):
-        super(Specification_Receiver_handller, self).__init__()
+        super(event_Receiver_handller, self).__init__()
         self.server = server
         self.topic = topic
         self.network = network
@@ -32,6 +32,7 @@ class Specification_Receiver_handller(MessagingHandler):
         event.container.create_receiver(conn, self.topic)
 
     def process_event(self, network_config):
+        print("event:", network_config)
         logging.info("now will call config in network")
         self.network.config_network(network_config)
 
