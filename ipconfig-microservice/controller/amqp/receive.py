@@ -6,7 +6,10 @@ from threading import Thread
 #imports to use AMQP 1.0 communication protocol
 from proton.handlers import MessagingHandler
 from proton.reactor import Container
+from .send import Sender
 
+sender = Sender()
+RESOURCE = {"PORT":"LTP","BRIDGE_GROUP":"LTP","INTERFACE":"CTP","SVI":"CTP","VLAN":"CTP","VLAN_MEMBER":"CTP"}
 
 
 class Receiver():
@@ -34,13 +37,25 @@ class event_Receiver_handller(MessagingHandler):
     def process_event(self, network_config):
         print("event:", network_config)
         logging.info("now will call config in network")
-        self.network.config_network(network_config)
+        status = self.network.config_network(network_config)
+        return status
 
     def on_message(self, event):
         try:
             jsonData = json.loads(event.message.body)
             logging.info("msg received {}".format(jsonData))
-            self.process_event(jsonData)
+            status = self.process_event(jsonData)
+            topic='topic://'+'topology.status'
+            status_msg = {}
+            status_msg["resourceId"]=int(jsonData["resourceId"])
+            status_msg["resourceType"]=RESOURCE[jsonData["resource"]]
+            status_msg["resourceStatus"]=status
+            print("status msg",status_msg)
+            if jsonData["action"]=="DELETED" and status == "DOWN":
+                pass
+            else:
+                sender.send(self.server,topic, status_msg)
+
             
         except Exception:
             traceback.print_exc()

@@ -3,6 +3,7 @@ from http.server import HTTPServer
 from .http_server.server import httpHandller
 from .amqp.receive import Receiver
 
+
 class Controller_service:
     def __init__(self,config):
         self.cfg = config
@@ -29,6 +30,7 @@ class Controller_service:
         logging.info('Stopping httpd...\n')
     
     def subscribe2events(self,network):
+        logging.basicConfig(level=logging.INFO)
         topic='topic://'+'topology.event'
         url = "10.11.200.125:5672"
         logging.info("Agent will start lesstning for events from the controller")

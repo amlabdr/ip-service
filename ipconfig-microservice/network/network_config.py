@@ -7,6 +7,7 @@ class Network_config:
         self.topology = {}
         self.action_translator={"CREATED":"create", "DELETED":"delete", "UPDATED":"replace"}
         self.netconf_xml_templates = os.environ.get('NETCONF_XML_TEMPLATES', 'ipconfig-microservice/network/ocnos_service/xml_templates/')
+
     
     def fill_xml_template(self,template_file, configuration):
         # Read the XML template from the file
@@ -94,6 +95,7 @@ class Network_config:
                         print(traceback.format_exc())
                         print(e)
                         logging.error(f"Error editing configuration: {e}")
+                        
 
                     # Commit the changes and save them to the running configuration
                     try:
@@ -104,3 +106,8 @@ class Network_config:
                         netconfClient.discard_changes()
             except Exception as e:
                 logging.error(f"Error: {e}")
+                return "DOWN"
+            if configuration["action"]=="DELETED":
+                return "DELETED"
+            else:
+                return "UP"
