@@ -1,0 +1,8 @@
+<components xmlns="http://openconfig.net/yang/platform">
+  <component>
+    <name>CHASSIS</name>
+    <config>
+      <base-mac-address />
+    </config>
+  </component>
+</components>

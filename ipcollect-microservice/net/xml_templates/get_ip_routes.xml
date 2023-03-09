@@ -1,0 +1,5 @@
+<network-instances xmlns="http://openconfig.net/yang/network-instance">
+  <network-instance>
+    <name>default</name>
+  </network-instance>
+</network-instances>
