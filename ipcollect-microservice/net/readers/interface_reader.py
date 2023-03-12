@@ -28,6 +28,12 @@ class InterfaceReader():
     def get_interface_mac(self, interface_dict={}):
         return get_value(interface_dict, ["ethernet", "state", "hw-mac-address"], "")
 
+    def get_interface_vlan_mode(self, interface_dict={}):
+        return get_value(interface_dict, ["ethernet", "switched-vlan", "state", "interface-mode"], "N/A")
+
+    def get_interface_vlans(self, interface_dict={}):
+        return get_value(interface_dict, ["ethernet", "switched-vlan", "state", "trunk-vlans"], "")
+
     def get_interface_ipv4(self, interface_dict={}):
         if isinstance(get_value(interface_dict, ["subinterfaces", "subinterface", "ipv4", "addresses", "address"]),list):
             return get_value(interface_dict, ["subinterfaces", "subinterface", "ipv4", "addresses", "address", 0, "ip"], "") + "/" + get_value(interface_dict, ["subinterfaces", "subinterface", "ipv4", "addresses", "address", 0, "config", "prefix-length"], "")
@@ -60,6 +66,8 @@ class InterfaceReader():
                 result["MACADDR"] = self.get_interface_mac(interface)
                 result["IPADDR"] = self.get_interface_ipv4(interface)
                 result["TYPE"] = self.get_interface_type(interface)
+                result["VLAN_MODE"] = self.get_interface_vlan_mode(interface)
+                result["VLANS"] = self.get_interface_vlans(interface)
                 self.result.append(result)
             else:
                 for subinterface in interface["subinterfaces"]["subinterface"]:
