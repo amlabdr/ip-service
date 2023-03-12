@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rpc-reply xmlns:nc="urn:ietf:params:xml:ns:netconf:base:1.0"
+  message-id="urn:uuid:b4f4d412-33aa-4877-8022-2af45ff9a074"
+  last-modified="2019-02-18T11:20:01Z"
+  xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+  <data><system xmlns="http://openconfig.net/yang/system">
+<config>
+<hostname>dc-qnet-ctrl-nist-222</hostname>
+</config>
+<state>
+<hostname>dc-qnet-ctrl-nist-222</hostname>
+<current-datetime>2019-02-18T12:24:47Z</current-datetime>
+</state>
+<logging>
+<remote-servers>
+<config xmlns="http://www.ipinfusion.com/yang/ocnos/ipi-oc-sys-deviations">
+<vrf>management</vrf>
+</config>
+<state xmlns="http://www.ipinfusion.com/yang/ocnos/ipi-oc-sys-deviations">
+<vrf>management</vrf>
+</state>
+</remote-servers>
+</logging>
+</system>
+
+  </data>
+</rpc-reply>

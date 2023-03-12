@@ -1,13 +1,12 @@
 from net.readers.interface_reader import InterfaceReader
-from net.reader import Reader
 
-class MetadataReader(Reader):
+class MetadataReader():
     def __init__(self, metadata_dict={}, interface_dict={}) -> None:
         self.metadata_dict = metadata_dict
         self.interface_dict = interface_dict
         self.result = {}
 
-
+    # get mac address of the management interface which is the ID of the device
     def get_mac(self):
         iface_reader = InterfaceReader(self.interface_dict)
         iface_reader.read()
