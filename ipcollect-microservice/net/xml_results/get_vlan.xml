@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rpc-reply xmlns:nc="urn:ietf:params:xml:ns:netconf:base:1.0"
+  message-id="urn:uuid:4bb37167-162b-48a2-9f4e-69fedbcca44f"
+  last-modified="2019-02-21T12:36:02Z"
+  xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+  <data><network-instances xmlns="http://openconfig.net/yang/network-instance">
+<network-instance>
+<name>1</name>
+<vlans>
+<vlan>
+<vlan-id>212</vlan-id>
+<config>
+<vlan-id>212</vlan-id>
+<name>vlan212</name>
+<status>ACTIVE</status>
+</config>
+<state>
+<vlan-id>212</vlan-id>
+<name>vlan212</name>
+<status>ACTIVE</status>
+</state>
+</vlan>
+<vlan>
+<vlan-id>33</vlan-id>
+<config>
+<vlan-id>33</vlan-id>
+<name>vlan33</name>
+<status>ACTIVE</status>
+</config>
+<state>
+<vlan-id>33</vlan-id>
+<name>vlan33</name>
+<status>ACTIVE</status>
+</state>
+<members>
+<member>
+<state>
+<interface>xe30 </interface>
+</state>
+</member>
+</members>
+</vlan>
+<vlan>
+<vlan-id>44</vlan-id>
+<config>
+<vlan-id>44</vlan-id>
+<status>ACTIVE</status>
+</config>
+<state>
+<vlan-id>44</vlan-id>
+<status>ACTIVE</status>
+</state>
+</vlan>
+<vlan>
+<vlan-id>501</vlan-id>
+<config>
+<vlan-id>501</vlan-id>
+<name>DC_QNET_MGMT</name>
+<status>ACTIVE</status>
+</config>
+<state>
+<vlan-id>501</vlan-id>
+<name>DC_QNET_MGMT</name>
+<status>ACTIVE</status>
+</state>
+<members>
+<member>
+<state>
+<interface>xe1 </interface>
+</state>
+</member>
+<member>
+<state>
+<interface>xe1 </interface>
+</state>
+</member>
+</members>
+</vlan>
+<vlan>
+<vlan-id>502</vlan-id>
+<config>
+<vlan-id>502</vlan-id>
+<name>DC_QNET_MGMT_BKP</name>
+<status>ACTIVE</status>
+</config>
+<state>
+<vlan-id>502</vlan-id>
+<name>DC_QNET_MGMT_BKP</name>
+<status>ACTIVE</status>
+</state>
+<members>
+<member>
+<state>
+<interface>ce49 </interface>
+</state>
+</member>
+</members>
+</vlan>
+</vlans>
+</network-instance>
+</network-instances>
+
+  </data>
+</rpc-reply>
