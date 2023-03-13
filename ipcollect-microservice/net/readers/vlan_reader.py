@@ -26,8 +26,7 @@ class VlanReader():
             result = {}
             result["NAME"] = self.get_vlan_name(vlan)
             result["VID"] = self.get_vlan_id(vlan)
-            result["MEMBER"] = self.get_vlan_members(vlan)
-            result["MODE"] = 'tagged'
+            result["BRIDGE_GROUP"] = "1"
             self.result.append(result)
 
 
