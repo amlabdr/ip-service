@@ -1,4 +1,6 @@
 from utils.common import get_value
+from utils.common import expand_range_string
+from utils.common import flatten_nested_list
 
 class InterfaceReader():
     def __init__(self, input_dict={}) -> None:
@@ -23,17 +25,34 @@ class InterfaceReader():
         return get_value(interface_dict, ["state","mtu"], "")
 
     def get_interface_speed(self, interface_dict={}):
-        return get_value(interface_dict, ["ethernet", "state", "negotiated-port-speed"], "")
+        result = get_value(interface_dict, ["ethernet", "state", "negotiated-port-speed"], "")
+        return result.split('_')[-1]
 
     def get_interface_mac(self, interface_dict={}):
         return get_value(interface_dict, ["ethernet", "state", "hw-mac-address"], "")
 
     def get_interface_vlan_mode(self, interface_dict={}):
-        return get_value(interface_dict, ["ethernet", "switched-vlan", "state", "interface-mode"], "N/A")
+        return get_value(interface_dict, ["ethernet", "switched-vlan", "state", "interface-mode"], "None")
 
-    def get_interface_vlans(self, interface_dict={}):
-        return get_value(interface_dict, ["ethernet", "switched-vlan", "state", "trunk-vlans"], "")
+    def get_interface_vlans(self, interface_dict={}, interface_vlan_mode='None'):
+        if interface_vlan_mode == 'TRUNK':
+            result=[]
+            tmp_result = get_value(interface_dict, ["ethernet", "switched-vlan", "state", "trunk-vlans"], "")
+            #contiguous ranges
+            if isinstance(tmp_result, list):
+                for element in tmp_result:
+                    tmp_element = expand_range_string(element)
+                    result.extend(tmp_element)
+                return result
+            elif isinstance(tmp_result, str):
+                return expand_range_string(tmp_result)
+        elif interface_vlan_mode == 'ACCESS':
+            result = [get_value(interface_dict, ["ethernet", "switched-vlan", "state", "access-vlan"], "")]
+        return result 
 
+    def get_interface_native_vlan(self, interface_dict={}):
+        return get_value(interface_dict, ["ethernet", "switched-vlan", "state", "native-vlan"], "")
+    
     def get_interface_ipv4(self, interface_dict={}):
         if isinstance(get_value(interface_dict, ["subinterfaces", "subinterface", "ipv4", "addresses", "address"]),list):
             return get_value(interface_dict, ["subinterfaces", "subinterface", "ipv4", "addresses", "address", 0, "ip"], "") + "/" + get_value(interface_dict, ["subinterfaces", "subinterface", "ipv4", "addresses", "address", 0, "config", "prefix-length"], "")
@@ -67,7 +86,10 @@ class InterfaceReader():
                 result["IPADDR"] = self.get_interface_ipv4(interface)
                 result["TYPE"] = self.get_interface_type(interface)
                 result["VLAN_MODE"] = self.get_interface_vlan_mode(interface)
-                result["VLANS"] = self.get_interface_vlans(interface)
+                if result["VLAN_MODE"] != "None":
+                    result["VLANS"] = self.get_interface_vlans(interface, result["VLAN_MODE"])
+                if result["VLAN_MODE"] == "TRUNK":
+                    result["NATIVE_VLAN"] = self.get_interface_native_vlan(interface)
                 self.result.append(result)
             else:
                 for subinterface in interface["subinterfaces"]["subinterface"]:
@@ -81,6 +103,7 @@ class InterfaceReader():
                     result["MACADDR"] = "" 
                     result["IPADDR"] = self.get_vlan_interface_ipv4(subinterface)
                     result["TYPE"] = "Vlan"
+                    result["VLAN"] = result["INDEX"]
                     self.result.append(result)
 
             

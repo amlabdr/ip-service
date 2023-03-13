@@ -20,6 +20,6 @@ class MetadataReader():
     def read(self):
         self.result["HOSTNAME"] = self.metadata_dict["system"]["state"]["hostname"]
         self.result["MAC"] = self.get_mac()
-        self.result["TYPE"] = "Router"
+        self.result["TYPE"] = "ROUTER"
         self.result["PLATFORM"] = "OcNOS"
 
