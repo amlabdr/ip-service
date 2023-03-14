@@ -70,6 +70,8 @@ class InterfaceReader():
             return "Vlan"
         if get_value(interface_dict, ["ethernet", "switched-vlan", "state", "interface-mode"], ""):
             return "Bridge"
+        if "lo" in interface_dict["name"]:
+            return "Loopback"
         return "Other" 
 
     def read(self):

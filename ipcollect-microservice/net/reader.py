@@ -17,13 +17,6 @@ class Reader:
             'lldp':'net/xml_templates/get_lldp.xml',
             'vlan':'net/xml_templates/get_vlan.xml',
         }
-
-        self.xml_result_dict = {
-            'metadata':'/home/mheni/github/ip-service/ipcollect-microservice/net/xml_results/get_system.xml',
-            'interfaces':'/home/mheni/github/ip-service/ipcollect-microservice/net/xml_results/get_interfaces.xml',
-            'lldp':'/home/mheni/github/ip-service/ipcollect-microservice/net/xml_results/get_lldp.xml',
-            'vlan':'/home/mheni/github/ip-service/ipcollect-microservice/net/xml_results/get_vlan.xml',
-        }
     
     def __str__(self) -> str:
         return f'Reader = {vars(self)}'
@@ -57,19 +50,16 @@ class Reader:
         connection_manager = self.connect_to_netconf_server(node)
         interface_template = self.load_xml_template(self.xml_template_dict['interfaces'])
         xml_result = connection_manager.get(filter=('subtree', interface_template)).xml
-        #test with local file
-        #xml_result = self.read_result_file(self.xml_result_dict['interfaces'])
         interface_dict = xml_preprocessing(xml_result)
 
         #now we can get the metadata and the MetadataReader will add the MAC address to the metadata result
         metadata_template = self.load_xml_template(self.xml_template_dict['metadata'])
         xml_result = connection_manager.get(filter=('subtree', metadata_template)).xml
-        #test with local file
-        #xml_result = self.read_result_file(self.xml_result_dict['metadata'])
         metadata_dict = xml_preprocessing(xml_result)
 
         reader = MetadataReader(metadata_dict, interface_dict)
         reader.read()
+        connection_manager.close_session()
 
         return reader.result
 
@@ -77,33 +67,30 @@ class Reader:
         connection_manager = self.connect_to_netconf_server(node)
         interface_template = self.load_xml_template(self.xml_template_dict['interfaces'])
         xml_result = connection_manager.get(filter=('subtree', interface_template)).xml
-        #test with local file
-        #xml_result = self.read_result_file(self.xml_result_dict['interfaces'])
         interface_dict = xml_preprocessing(xml_result)
         reader = InterfaceReader(interface_dict)
         reader.read()
+        connection_manager.close_session()
         return reader.result
 
     def read_lldp(self, node):
         connection_manager = self.connect_to_netconf_server(node)
         lldp_template = self.load_xml_template(self.xml_template_dict['lldp'])
         xml_result = connection_manager.get(filter=('subtree', lldp_template)).xml
-        #test with local file
-        #xml_result = self.read_result_file(self.xml_result_dict['lldp'])
         lldp_dict = xml_preprocessing(xml_result)
         reader = LldpReader(lldp_dict)
         reader.read()
+        connection_manager.close_session()
         return reader.result
 
     def read_vlan(self, node):
         connection_manager = self.connect_to_netconf_server(node)
         vlan_template = self.load_xml_template(self.xml_template_dict['vlan'])
         xml_result = connection_manager.get(filter=('subtree', vlan_template)).xml
-        #test with local file
-        #xml_result = self.read_result_file(self.xml_result_dict['vlan'])
         vlan_dict = xml_preprocessing(xml_result)
         reader = VlanReader(vlan_dict)
         reader.read()
+        connection_manager.close_session()
         return reader.result
 
     def connect_to_netconf_server(self, node):
