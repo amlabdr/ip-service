@@ -15,11 +15,20 @@ class LldpReader():
         return get_value(interface_dict, ["neighbors", "neighbor", "state", "chassis-id"], "")
 
     def read(self):
-        for interface in self.input_dict["lldp"]["interfaces"]["interface"]:
+        interfaces = self.input_dict["lldp"]["interfaces"]["interface"]
+        if isinstance(interfaces, list):
+            for interface in interfaces:
+                result = {}
+                result["LOCALPORT"] = self.get_lldp_local_port(interface)
+                result["REMOTEPORT"] = self.get_lldp_remote_port(interface)
+                result["REMOTEDEVICE"] = self.get_lldp_neighbor_id(interface)
+                if result["REMOTEDEVICE"] != "":
+                    self.result.append(result)
+        elif isinstance(interfaces, dict):
             result = {}
-            result["LOCALPORT"] = self.get_lldp_local_port(interface)
-            result["REMOTEPORT"] = self.get_lldp_remote_port(interface)
-            result["REMOTEDEVICE"] = self.get_lldp_neighbor_id(interface)
+            result["LOCALPORT"] = self.get_lldp_local_port(interfaces)
+            result["REMOTEPORT"] = self.get_lldp_remote_port(interfaces)
+            result["REMOTEDEVICE"] = self.get_lldp_neighbor_id(interfaces)
             if result["REMOTEDEVICE"] != "":
                 self.result.append(result)
 

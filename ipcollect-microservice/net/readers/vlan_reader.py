@@ -1,3 +1,4 @@
+import json
 from utils.common import get_value
 
 class VlanReader():
@@ -22,10 +23,18 @@ class VlanReader():
         return result
     
     def read(self):
-        for vlan in self.input_dict["network-instances"]["network-instance"]["vlans"]["vlan"]:
+        vlans = self.input_dict["network-instances"]["network-instance"]["vlans"]["vlan"]
+        if isinstance(vlans, list):
+            for vlan in vlans:
+                result = {}
+                result["NAME"] = self.get_vlan_name(vlan)
+                result["VID"] = self.get_vlan_id(vlan)
+                result["BRIDGE_GROUP"] = "1"
+                self.result.append(result)
+        elif isinstance(vlans, dict):
             result = {}
-            result["NAME"] = self.get_vlan_name(vlan)
-            result["VID"] = self.get_vlan_id(vlan)
+            result["NAME"] = self.get_vlan_name(vlans)
+            result["VID"] = self.get_vlan_id(vlans)
             result["BRIDGE_GROUP"] = "1"
             self.result.append(result)
 
