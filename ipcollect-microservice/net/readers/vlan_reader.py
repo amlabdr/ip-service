@@ -37,5 +37,11 @@ class VlanReader():
             result["VID"] = self.get_vlan_id(vlans)
             result["BRIDGE_GROUP"] = "1"
             self.result.append(result)
+        #add default vlan which is no returned by netconf
+        self.result.append({
+                          "NAME": "default_vlan",
+                          "VID": "1",
+                          "BRIDGE_GROUP": "1"
+                      })
 
 
