@@ -17,6 +17,6 @@ class ControllerService:
     def publish_interface_status(self, topic, message):
         self.status_sender.send(self.controller_host,topic, message)
        
-    def subcribe_to_topology_events(self, topic, target_nodes):
-        self.event_receiver.receive(self.controller_host,topic, target_nodes)
+    def subcribe_to_topology_events(self, topic, config, network_reader):
+        self.event_receiver.receive(self.controller_host,topic, config, network_reader)
        
