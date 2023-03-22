@@ -1,4 +1,8 @@
-graph pni_network {
-   "dcqnet-nist-ctrl-01" [function="dcqnet-ctrl"  os="ocnos" mgmt_ip="10.11.200.13" ports="54" username="ocnos" password="ocnos"]
-   "dcqnet-nist-ctrl-02" [function="dcqnet-ctrl"  os="ocnos" mgmt_ip="10.11.202.2" ports="54" username="ocnos" password="ocnos"]
-}
+[
+   {
+      "name": "dcqnet-ctrl-01",
+      "mgmtIP": "10.11.200.13",
+      "username": "ocnos",
+      "password": "ocnos"
+   }
+]
