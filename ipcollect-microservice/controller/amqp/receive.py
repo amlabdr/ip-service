@@ -7,13 +7,18 @@ from proton.handlers import MessagingHandler
 from proton.reactor import Container
 from pyparsing import traceback
 
+from controller.amqp.send import Sender
+
+
+sender = Sender()
 
 class Receiver():
     def __init__(self):
         super(Receiver, self).__init__()
         
     def receive(self, server, topic, config, network_reader):
-        logging.info("will start the rcv")
+        print("will start the receiver")
+        logging.info("will start the receiver")
         handler = ReceiverHandler(server, topic, config, network_reader)
         container = Container(handler).run()
 
@@ -41,9 +46,13 @@ class ReceiverHandler(MessagingHandler):
 
     def process_message(self, message):
         if message['action'] == 'CREATED' or message['action'] == 'UPDATE' :
-            self.config.target_nodes[message['content']['name']] = message['content']['mgmtIP']
+            #self.config.target_nodes[message['content']['name']] = message['content']['mgmtIP']
             # launch a network read, probably need to pass network reader as argument
             self.network_reader.read(self.config)
+            # send on topic topology.collection
+            sender.send(self.server, 'topic://topology.collection', self.network_reader.result)
+            print('sent')
+            # add subscription to interface status
         elif message['action'] == 'DELETE':
             self.config.target_nodes.pop(message['content']['name'])
-
+            #destroy subscription to interface status
