@@ -22,8 +22,8 @@ class Reader:
         return f'Reader = {vars(self)}'
 
     def load_nodes(self, config):
-        for node in config.network_targets.get_nodes():
-            self.nodes[node.get_name().replace('"','')] = node.obj_dict['attributes']
+        for node in config.network_targets:
+            self.nodes[node['name']] = node
 
     def load_xml_template(self, template_path):
         with open(template_path) as template_file:
@@ -95,10 +95,10 @@ class Reader:
 
     def connect_to_netconf_server(self, node):
         try:
-            return manager.connect_ssh(host = node['mgmt_ip'].replace('"',''),
+            return manager.connect_ssh(host = node['mgmtIP'],
                                 port = 830,
-                                username = node['username'].replace('"',''),
-                                password = node['password'].replace('"',''),
+                                username = node['username'],
+                                password = node['password'],
                                 hostkey_verify = False)
         except ncclient.NCClientError:
             return 
