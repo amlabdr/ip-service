@@ -1,4 +1,4 @@
-import json
+import json, time
 from config.config import Config
 from net.reader import Reader
 from controller.controller import ControllerService
@@ -10,6 +10,12 @@ def run():
     authentication_period = 60 ## or read it from external file
     thread_authentification = Thread(target=ctrl.controllerAuthentication,args=(authentication_period,))
     thread_authentification.start()
+    time.sleep(1)
+    #get subnets
+    subnets = ctrl.get(url="http://10.11.200.125:8787/api/topology/subnet/type/QNET")
+
+    print(subnets)
+    return
 
     config = Config()
     result = {}

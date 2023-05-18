@@ -13,6 +13,7 @@ class ControllerService:
         self.status_sender = Sender()
         self.event_receiver = Receiver()
         self.token = ""
+        self.request = Request()
 
     def publish_collected_topology(self, topic, message):
         self.collection_sender.send(self.controller_host,topic, message)
@@ -33,11 +34,9 @@ class ControllerService:
         while True:
             #update TOKEN EVERY PERIODE
             current_request = Request()
-            data = {
-                'username': self.cfg.conf_file_contents['CONTROLLER_AUTH']['username'],
-                'password': self.cfg.conf_file_contents['CONTROLLER_AUTH']['password']
-            }
-            url = self.cfg.controller_url + "/api/login/user"
+            data = {"username":"admin",
+                    "password":"admin"}
+            url = "http://10.11.200.125:8787" + "/api/login/user"
             try:
                 response = current_request.postRequestJson(url,data)
                 print(response.json())
@@ -47,13 +46,24 @@ class ControllerService:
                 logging.exception("An exception  during Authentification")
             time.sleep(authentication_period)
        
-    def post(self,filename):
+    def post(self,url,filename):
         """Method to post a file to the controller
         Args:
             filename : name of the file to post
         return:
             response
         """
-        response = self.request.postRequest(filename = filename, token = self.token)
-        logging.info("post response to {} is : {}".format(self.request.url,response))
+        response = self.request.postRequest(url,filename = filename, token = self.token)
+        
+        return response
+    
+    def get(self,url):
+        """Method to post a file to the controller
+        Args:
+            filename : name of the file to post
+        return:
+            response
+        """
+        response = self.request.getRequest(url, token = self.token)
+        
         return response
