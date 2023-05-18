@@ -1,6 +1,7 @@
 import os, logging, traceback, re, json, copy
 from ncclient import manager
 from ncclient.operations import RPCError
+import time
 
 class Network_config:
     def __init__(self):
@@ -62,8 +63,8 @@ class Network_config:
             config_list.append(copy.deepcopy(configuration))
             configuration["action"] = "CREATED"
             config_list.append(copy.deepcopy(configuration))
-        elif configuration["resource"] == "SVI":
-            pass
+        #elif configuration["resource"] == "SVI":
+        #    pass
         else:
             config_list.append(configuration)
         return config_list
@@ -74,20 +75,32 @@ class Network_config:
         if (configuration["content"]["host"] in self.topology ):
             try:
                 # Connect to the netconf server
-                netconfClient = manager.connect(
+                """netconfClient = manager.connect(
                     host=self.topology[device]['mgmt_ip'].replace('"',''),
                     port=830,
                     username=self.topology[device]['username'].replace('"',''),
                     password=self.topology[device]['password'].replace('"',''),
-                    hostkey_verify=False,)
+                    hostkey_verify=False,)"""
                 del configuration["content"]["host"]
                 config_list = self.get_config_list(configuration)
-                print(config_list)
+                print("config",configuration)
                 for configuration in config_list:
+                    
                     xml_obj = ""
                     template_file = self.get_template_file(configuration)
+                    
                     xml_obj += self.fill_xml_template(template_file, configuration)
+                    
                     xml_configuration=self.fill_xml_config(xml_obj)
+                    byte_count = len(xml_configuration.encode('utf-8'))
+                    print(byte_count)
+                    #time of end
+                    
+                    with open('end_timestamps.txt', 'a') as f:
+                        end_time = time.time()
+                        f.write(f'{end_time}\n')
+
+                    return
                     try:
                         reply = netconfClient.edit_config(target="candidate", config=xml_configuration)
                         print(reply)

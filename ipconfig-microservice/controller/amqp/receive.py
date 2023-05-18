@@ -2,6 +2,7 @@
 import json, traceback, logging, re, time
 from datetime import datetime
 from threading import Thread
+import time
 
 #imports to use AMQP 1.0 communication protocol
 from proton.handlers import MessagingHandler
@@ -42,6 +43,10 @@ class event_Receiver_handller(MessagingHandler):
 
     def on_message(self, event):
         try:
+            #time to start
+            with open('start_timestamps.txt', 'a') as f:
+                start_time = time.time()
+                f.write(f'{start_time}\n')
             jsonData = json.loads(event.message.body)
             logging.info("msg received {}".format(jsonData))
             status = self.process_event(jsonData)
