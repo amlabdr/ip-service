@@ -2,8 +2,15 @@ import json
 from config.config import Config
 from net.reader import Reader
 from controller.controller import ControllerService
+from threading import Thread
 
 def run():
+
+    ctrl = ControllerService('10.11.200.125:5672')
+    authentication_period = 60 ## or read it from external file
+    thread_authentification = Thread(target=ctrl.controllerAuthentication,args=(authentication_period,))
+    thread_authentification.start()
+
     config = Config()
     result = {}
     reader = Reader() 
@@ -13,7 +20,7 @@ def run():
     with open("/tmp/result.json", 'w') as json_file:
         json_file.write(json_data)
         json_file.close()
-    ctrl = ControllerService('10.11.200.125:5672')
+    
     ctrl.publish_collected_topology(topic = 'topic://topology.collection', message = result)
     ctrl.subcribe_to_topology_events(topic = 'topic://topology.events',
                                      config = config,
