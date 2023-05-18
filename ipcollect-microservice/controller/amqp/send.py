@@ -48,6 +48,7 @@ class SendHandler(MessagingHandler):
         
     def on_accepted(self, event):
         logging.info("msg accepted in topic {}".format(self.topic))
+        print("accepted")
         self.confirmed += 1
         if self.confirmed == self.total:
             event.connection.close()

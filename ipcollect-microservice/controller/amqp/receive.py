@@ -48,6 +48,7 @@ class ReceiverHandler(MessagingHandler):
         if message['action'] == 'CREATED' or message['action'] == 'UPDATE' :
             #self.config.target_nodes[message['content']['name']] = message['content']['mgmtIP']
             # launch a network read, probably need to pass network reader as argument
+            # read from event (mgmtIp) and collect for one switch, add to target nodes -> collect target nodes every 60s
             self.network_reader.read(self.config)
             # send on topic topology.collection
             sender.send(self.server, 'topic://topology.collection', self.network_reader.result)
