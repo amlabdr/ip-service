@@ -11,6 +11,7 @@ class Config:
         self.controller_rest_password = os.environ.get('CONTROLLER_REST_PASSWORD', 'admin')
         
         self.network_targets_file_path = os.environ.get('NET_TARGETS', 'config/network_targets.dot')
+        self.network_targets = None
         self.load_nodes()
 
     def load_nodes(self):
