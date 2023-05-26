@@ -42,7 +42,7 @@ class ControllerService:
             decoded_token = jwt.decode(self.token, options={'verify_signature': False})
             self.token_acquired_time = decoded_token.get('iat')
 
-    def token_is_expired():
+    def token_is_expired(self):
         if self.token:
             decoded_token = jwt.decode(self.token, options={'verify_signature': False})
             expiry_time = decoded_token.get('exp')
