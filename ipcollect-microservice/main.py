@@ -1,8 +1,9 @@
-import json, time
+import json
+from threading import Thread
+
 from config.config import Config
 from net.reader import Reader
 from controller.controller import ControllerService
-from threading import Thread
 
 def run():
 
@@ -10,16 +11,22 @@ def run():
     ctrl = ControllerService(config)
     
     # 1. get subnets
-    subnets = ctrl.get(url="http://10.11.200.125:8787/api/topology/subnet/type/QNET")
+    subnets = json.loads(ctrl.get(url="http://10.11.200.125:8787/api/topology/subnet/type/QNET"))
     # 2. get target nodes by subnet_id
-    config.network_targets = ctrl.get(url='http://10.11.200.125:8787/api/topology/'+subnet.id+'/nodes')
+    for subnet in subnets:
+        if subnet['name'] == 'dc-qnet':
+            nodes = json.loads(ctrl.get(url='http://10.11.200.125:8787/api/topology/subnet/'+str(subnet['id'])+'/nodes'))
+            for node in nodes:
+                if node['type'] == 'ROUTER':
+                    config.network_targets = node
+            print(config.network_targets)
     # 3. start periodic reader thread
     result = {}
     reader = Reader() 
     periodic_collection_thread = Thread(target=reader.read, args=(config))
     result = reader.result
     json_data = json.dumps(result,indent=2)
-    with open("/tmp/result.json", 'w') as json_file:ZZ
+    with open("/tmp/result.json", 'w') as json_file:
         json_file.write(json_data)
         json_file.close()
     
