@@ -23,14 +23,13 @@ def run():
     # 3. start periodic reader thread
     result = {}
     reader = Reader() 
-    periodic_collection_thread = Thread(target=reader.read, args=(config))
+    reader.read(config) # read from topology service (HTTP: login (return token), get subnets (with token), pick up one subnet (dc-qnet, id), read nodes w/ subent Id -> target_nodes)
     result = reader.result
     json_data = json.dumps(result,indent=2)
     with open("/tmp/result.json", 'w') as json_file:
         json_file.write(json_data)
         json_file.close()
     
-    # 4. subscribe to topology events in a seperate thread
     ctrl.publish_collected_topology(topic = 'topic://topology.collection', message = result)
     ctrl.subcribe_to_topology_events(topic = 'topic://topology.events',
                                      config = config,
@@ -39,4 +38,5 @@ def run():
     
 if __name__ == '__main__':
     run()
+
 
