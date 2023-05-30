@@ -47,3 +47,6 @@ def get_value(obj, keys, default_result=""):
        except KeyError:
            return default_result
    return obj
+
+def build_url(host, port, prefix, protocol='http'):
+    return protocol + '://' + host + ':' + str(port) + prefix

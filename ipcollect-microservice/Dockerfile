@@ -17,6 +17,7 @@ ENV CONTROLLER_AMQP_PORT '5672'
 #prefixes
 ENV CONTROLLER_LOGIN_PREFIX '/api/login/user'
 ENV CONTROLLER_QNET_SUBNET_PREFIX '/api/topology/subnet/type/QNET'
+ENV CONTROLLER_NODES_PER_SUBNET_PREFIX 'api/topology/subnet/ID/nodes'
 
 ENV COLLECTION_REPEAT_TIMER 60
 ENV NET_TARGETS /ipcollect-microservice/config/network_targets.dot

@@ -1,6 +1,7 @@
 import json
 from threading import Thread
-
+import os
+from utils.common import build_url
 from config.config import Config
 from net.reader import Reader
 from controller.controller import ControllerService
@@ -11,11 +12,19 @@ def run():
     ctrl = ControllerService(config)
     
     # 1. get subnets
-    subnets = json.loads(ctrl.get(url="http://10.11.200.125:8787/api/topology/subnet/type/QNET"))
+    subnets = json.loads(ctrl.get(url=build_url( os.environ.get('CONTROLLER_IP'),
+                                                os.environ.get('CONTROLLER_REST_PORT'),
+                                                os.environ.get('CONTROLLER_QNET_SUBNET_PREFIX'),
+                                                protocol='http')))
     # 2. get target nodes by subnet_id
     for subnet in subnets:
         if subnet['name'] == 'dc-qnet':
-            nodes = json.loads(ctrl.get(url='http://10.11.200.125:8787/api/topology/subnet/'+str(subnet['id'])+'/nodes'))
+            nodes_url = build_url(os.environ.get('CONTROLLER_IP'),
+                                  os.environ.get('CONTROLLER_REST_PORT'),
+                                  os.environ.get('CONTROLLER_NODES_PER_SUBNET_PREFIX'),
+                                  protocol='http')
+            nodes_url = nodes_url.replace('ID', str(subnet['id]']))
+            nodes = json.loads(ctrl.get(url=nodes_url))
             for node in nodes:
                 if node['type'] == 'ROUTER':
                     config.network_targets.append(node)
