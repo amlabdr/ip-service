@@ -18,8 +18,8 @@ def run():
             nodes = json.loads(ctrl.get(url='http://10.11.200.125:8787/api/topology/subnet/'+str(subnet['id'])+'/nodes'))
             for node in nodes:
                 if node['type'] == 'ROUTER':
-                    config.network_targets = node
-            print(config.network_targets)
+                    config.network_targets.append(node)
+    print(config.network_targets)
     # 3. start periodic reader thread
     result = {}
     reader = Reader() 
