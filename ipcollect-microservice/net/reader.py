@@ -98,10 +98,10 @@ class Reader:
 
     def connect_to_netconf_server(self, node):
         try:
-            return manager.connect_ssh(host = node['mgmtIP'],
+            return manager.connect_ssh(host = node['mgmtIp'],
                                 port = 830,
-                                username = node['username'],
-                                password = node['password'],
+                                username = os.environ.get('NETCONF_USER'),
+                                password = os.environ.get('NETCONF_PASSWORD'),
                                 hostkey_verify = False)
         except ncclient.NCClientError:
             return 
