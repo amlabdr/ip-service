@@ -55,7 +55,7 @@ class ControllerService:
             self.login()
         return self.token
 
-    def post(self, url, filename):
+    def post_file(self, url, filename):
         """Method to post a file to the controller
         Args:
             filename : name of the file to post
@@ -63,7 +63,19 @@ class ControllerService:
             response
         """
         self.get_token()
-        response = self.request.postRequest(url,filename = filename, token = self.token)
+        response = self.request.post_request_file(url,filename = filename, token = self.token)
+        
+        return response
+    
+    def post_json(self, url, json_data):
+        """Method to post a file to the controller
+        Args:
+            filename : name of the file to post
+        return:
+            response
+        """
+        self.get_token()
+        response = self.request.post_request_json(url,data = json_data, token = self.token)
         
         return response
     
@@ -75,6 +87,6 @@ class ControllerService:
             response
         """
         self.get_token()
-        response = self.request.getRequest(url, token = self.token)
+        response = self.request.get_request(url, token = self.token)
         
         return response
