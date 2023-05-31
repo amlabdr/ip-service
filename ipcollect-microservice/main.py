@@ -1,7 +1,6 @@
 import json
 from threading import Thread
 import os
-from utils.common import build_url
 from config.config import Config
 from net.reader import Reader
 from controller.controller import ControllerService
