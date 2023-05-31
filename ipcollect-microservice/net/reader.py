@@ -1,11 +1,13 @@
 import xml.etree.ElementTree as ET
+import ncclient
+from ncclient import manager
+import os
+
 from net.readers.interface_reader import InterfaceReader
 from net.readers.lldp_reader import LldpReader
 from net.readers.metadata_reader import MetadataReader
 from net.readers.vlan_reader import VlanReader
 from utils.common import xml_preprocessing
-import ncclient
-from ncclient import manager
 
 class Reader:
     def __init__(self):
