@@ -11,18 +11,12 @@ def run():
     ctrl = ControllerService(config)
     
     # 1. get subnets
-    subnets = json.loads(ctrl.get(url=build_url( os.environ.get('CONTROLLER_IP'),
-                                                os.environ.get('CONTROLLER_REST_PORT'),
-                                                os.environ.get('CONTROLLER_QNET_SUBNET_PREFIX'),
-                                                protocol='http')))
+    subnets = json.loads(ctrl.get(url = ctrl.controller_rest_url+os.environ.get('CONTROLLER_QNET_SUBNET_PREFIX')))
     # 2. get target nodes by subnet_id
     for subnet in subnets:
         if subnet['name'] == 'dc-qnet':
-            nodes_url = build_url(os.environ.get('CONTROLLER_IP'),
-                                  os.environ.get('CONTROLLER_REST_PORT'),
-                                  os.environ.get('CONTROLLER_NODES_PER_SUBNET_PREFIX'),
-                                  protocol='http')
-            nodes_url = nodes_url.replace('ID', str(subnet['id]']))
+            nodes_url = ctrl.controller_rest_url + os.environ.get('CONTROLLER_NODES_PER_SUBNET_PREFIX')
+            nodes_url = nodes_url.replace('ID', str(subnet['id']))
             nodes = json.loads(ctrl.get(url=nodes_url))
             for node in nodes:
                 if node['type'] == 'ROUTER':
