@@ -22,14 +22,6 @@ def expand_range_string(input_string):
     else:
         return [input_string]
 
-    #def list_is_flat(input_list):
-    #    if not isinstance(input_list, list):
-    #        return True
-    #    for element in input_list:
-    #        if isinstance(element, list):
-    #            return False
-    #    return True
-
 def flatten_nested_list(input_list):
     result = []
     for element in input_list:
@@ -47,6 +39,3 @@ def get_value(obj, keys, default_result=""):
        except KeyError:
            return default_result
    return obj
-
-def build_url(host, port, prefix, protocol='http'):
-    return protocol + '://' + host + ':' + str(port) + prefix
