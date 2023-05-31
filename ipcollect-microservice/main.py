@@ -25,7 +25,7 @@ def run():
     # 3. start periodic reader thread
     result = {}
     reader = Reader() 
-    reader.read(config) # read from topology service (HTTP: login (return token), get subnets (with token), pick up one subnet (dc-qnet, id), read nodes w/ subent Id -> target_nodes)
+    reader.read(config, ctrl) # read from topology service (HTTP: login (return token), get subnets (with token), pick up one subnet (dc-qnet, id), read nodes w/ subent Id -> target_nodes)
     result = reader.result
     json_data = json.dumps(result,indent=2)
     with open("/tmp/result.json", 'w') as json_file:
