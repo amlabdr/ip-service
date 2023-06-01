@@ -32,7 +32,7 @@ class ControllerService:
         self.status_sender.send(self.controller_amqp_url,topic, message)
        
     def subcribe_to_topology_events(self, topic, config, network_reader):
-        self.event_receiver.receive(self.controller_amqp_url,topic, config, network_reader)
+        self.event_receiver.receive(self.controller_amqp_url,topic, config, network_reader, self)
     
     def login(self):
         login_url = self.controller_rest_url+'/api/login/user'
