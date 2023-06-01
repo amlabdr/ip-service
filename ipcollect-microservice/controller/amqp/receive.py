@@ -39,21 +39,28 @@ class ReceiverHandler(MessagingHandler):
     def on_message(self, event):
         try:
             received_message = json.loads(event.message.body)
-            logging.info('message received {}. On topic {}'.format(received_message, self.topic))
+            print('message received {}. On topic {}'.format(received_message, self.topic))
             self.process_message(received_message)
         except Exception:
             traceback.print_exc()
 
     def process_message(self, message):
-        if message['action'] == 'CREATED' or message['action'] == 'UPDATE' :
-            self.config.target_nodes.append(message)
+        if message['action'] == 'CREATED' or message['action'] == 'UPDATED' :
+            #{'resource': 'NODE', 'action': 'CREATED', 'content': {'id': 20, 'name': 'dcqnet-ctrl-01', 'type': 'ROUTER', 'mgmtIp': '10.11.200.13', 'platform': 'OCNOS'}}
+            print('action is : '+ message['action'])
+            self.config.network_targets.append(message['content'])
+            print('TARGET NODES')
+            print(self.config.network_targets)
             # launch a network read, probably need to pass network reader as argument
             # read from event (mgmtIp) and collect for one switch, add to target nodes -> collect target nodes every 60s
-            self.network_reader.read(self.config)
+            self.network_reader.read(self.config, self.ctrl)
             # send on topic topology.collection
             sender.send(self.server, 'topic://topology.collection', self.network_reader.result)
             print('sent')
             # add subscription to interface status
-        elif message['action'] == 'DELETE':
-            self.config.target_nodes.pop(message['content']['name'])
+        elif message['action'] == 'DELETED':
+            print('action is : '+ message['action'])
+            self.config.network_targets.pop()
+            print('TARGET NODES')
+            print(self.config.network_targets)
             #destroy subscription to interface status
