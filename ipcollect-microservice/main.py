@@ -31,7 +31,7 @@ def run():
     time.sleep(1)
 
     
-    ctrl.subcribe_to_topology_events(topic = 'topic://topology.events',
+    ctrl.subcribe_to_topology_events(topic = 'topic://topology.event',
                                      config = config,
                                      network_reader = reader)
     print("Done")
