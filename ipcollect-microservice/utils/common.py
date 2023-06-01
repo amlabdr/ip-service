@@ -22,20 +22,13 @@ def expand_range_string(input_string):
     else:
         return [input_string]
 
-def list_is_flat(input_list):
-    for element in input_list:
-        if isinstance(element, list):
-            return False
-    return True
-
 def flatten_nested_list(input_list):
     result = []
     for element in input_list:
-        if list_is_flat(element) == False :
+        if isinstance(element, list) :
             result.extend(flatten_nested_list(element))
         else:
             result.append(element)
-    print(result)
     return result
 
 # returns value from dictionary with nested keys and returns default value if key doesn't exist

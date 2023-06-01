@@ -46,7 +46,7 @@ class ReceiverHandler(MessagingHandler):
 
     def process_message(self, message):
         if message['action'] == 'CREATED' or message['action'] == 'UPDATE' :
-            #self.config.target_nodes[message['content']['name']] = message['content']['mgmtIP']
+            self.config.target_nodes.append(message)
             # launch a network read, probably need to pass network reader as argument
             # read from event (mgmtIp) and collect for one switch, add to target nodes -> collect target nodes every 60s
             self.network_reader.read(self.config)

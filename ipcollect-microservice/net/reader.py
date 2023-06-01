@@ -1,11 +1,13 @@
-import xml.etree.ElementTree as ET
+import ncclient
+from ncclient import manager
+import os
+import time
+
 from net.readers.interface_reader import InterfaceReader
 from net.readers.lldp_reader import LldpReader
 from net.readers.metadata_reader import MetadataReader
 from net.readers.vlan_reader import VlanReader
 from utils.common import xml_preprocessing
-import ncclient
-from ncclient import manager
 
 class Reader:
     def __init__(self):
@@ -35,14 +37,24 @@ class Reader:
             xml_result_content = result_file.read()
         return xml_result_content
     
-    def read(self, config):
-        self.load_nodes(config)
-        for node_name, node_content in self.nodes.items():
-            self.result[node_name] = {}
-            self.result[node_name]['metadata'] = self.read_metadata(node_content)
-            self.result[node_name]['interfaces'] = self.read_interfaces(node_content)
-            self.result[node_name]['lldp'] = self.read_lldp(node_content)
-            self.result[node_name]['vlan'] = self.read_vlan(node_content)
+    def read(self, config, ctrl, collection_period = None, single_node = None):
+        nodes_to_process = []
+        if single_node is not None:
+            nodes_to_process.append(single_node)
+        else:
+            self.load_nodes(config)
+            nodes_to_process =self.nodes.items()
+        while True:
+            for node_name, node_content in nodes_to_process:
+                self.result[node_name] = {}
+                self.result[node_name]['metadata'] = self.read_metadata(node_content)
+                self.result[node_name]['interfaces'] = self.read_interfaces(node_content)
+                self.result[node_name]['lldp'] = self.read_lldp(node_content)
+                self.result[node_name]['vlan'] = self.read_vlan(node_content)
+            ctrl.publish_collected_topology(topic = os.environ.get('AMQP_TOPOLOGY_COLLECTION_TOPIC'), message = self.result)
+            if collection_period is None:
+                break
+            time.sleep(int(collection_period))
            
     def read_metadata(self, node):
         #since lldp only identifies neighbors by their MAC address, we need to retreive the MAC address of the device first
@@ -95,10 +107,10 @@ class Reader:
 
     def connect_to_netconf_server(self, node):
         try:
-            return manager.connect_ssh(host = node['mgmtIP'],
+            return manager.connect_ssh(host = node['mgmtIp'],
                                 port = 830,
-                                username = node['username'],
-                                password = node['password'],
+                                username = os.environ.get('NETCONF_USER'),
+                                password = os.environ.get('NETCONF_PASSWORD'),
                                 hostkey_verify = False)
         except ncclient.NCClientError:
             return 
