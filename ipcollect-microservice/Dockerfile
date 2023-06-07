@@ -23,9 +23,8 @@ ENV NETCONF_USER 'ocnos'
 ENV NETCONF_PASSWORD 'ocnos'
 
 # AMQP vars
-
-ENV AMQP_TOPOLOGY_COLLECTION_TOPIC 'topic://topology.collection'
-ENV AMQP_TOPOLOGY_EVENTS_TOPIC 'topic://topology.events'
+ENV AMQP_TOPOLOGY_COLLECTION_TOPIC 'topic://topology.collect'
+ENV AMQP_TOPOLOGY_EVENTS_TOPIC 'topic://topology.event'
 
 # Other
 ENV COLLECTION_REPEAT_TIMER 60
