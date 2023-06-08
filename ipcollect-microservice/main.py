@@ -13,9 +13,9 @@ def run():
     reader = Reader(config) 
     ctrl = ControllerService(config, reader)
     
-    # 1. get subnets
+    # get subnets
     subnets = json.loads(ctrl.get(url = ctrl.controller_rest_url+os.environ.get('CONTROLLER_QNET_SUBNET_PREFIX')))
-    # 2. get target nodes by subnet_id
+    # get target nodes by subnet_id
     for subnet in subnets:
         if subnet['name'] == 'dc-qnet':
             nodes_url = ctrl.controller_rest_url + os.environ.get('CONTROLLER_NODES_PER_SUBNET_PREFIX')
@@ -23,11 +23,10 @@ def run():
             nodes = json.loads(ctrl.get(url=nodes_url))
             for node in nodes:
                 if node['type'] == 'ROUTER':
-                    config.network_targets.append(node)
-    print(config.network_targets)
-    # 3. start periodic reader thread
-    reader = Reader() 
-    periodic_collection_thread = Thread(target=reader.read, args=(config, ctrl, os.environ.get('COLLECTION_REPEAT_TIMER')))
+                    ctrl.config.network_targets.append(node)
+    print(ctrl.config.network_targets)
+    # start periodic reader thread
+    periodic_collection_thread = Thread(target=ctrl.reader.read, args=(ctrl, os.environ.get('COLLECTION_REPEAT_TIMER')))
     periodic_collection_thread.start()
     time.sleep(1)
 
