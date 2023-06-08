@@ -25,7 +25,7 @@ class ControllerService:
         self.request = Request()
         self.collection_sender = Sender()
         self.status_sender = Sender()
-        self.event_receiver = Receiver()
+        self.event_receiver = Receiver(config)
 
     def publish_collected_topology(self, topic, message):
         self.collection_sender.send(self.controller_amqp_url,topic, message)
@@ -33,8 +33,8 @@ class ControllerService:
     def publish_interface_status(self, topic, message):
         self.status_sender.send(self.controller_amqp_url,topic, message)
        
-    def subcribe_to_topology_events(self, topic, config, network_reader):
-        self.event_receiver.receive(self.controller_amqp_url,topic, config, network_reader, self)
+    def subcribe_to_topology_events(self, topic):
+        self.event_receiver.receive(self.controller_amqp_url, topic, self)
     
     def login(self):
         login_url = self.controller_rest_url+'/api/login/user'
