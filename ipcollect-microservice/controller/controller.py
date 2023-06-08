@@ -7,7 +7,9 @@ import logging
 import jwt
 
 class ControllerService:
-    def __init__(self, config) -> None:
+    def __init__(self, config, reader) -> None:
+        self.config = config
+        self.reader = reader
         self.controller_rest_url = ( 'http://' + 
                                     config.controller_ip +
                                     ':' +
