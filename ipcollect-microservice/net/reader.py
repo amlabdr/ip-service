@@ -1,7 +1,7 @@
+import time
 import ncclient
 from ncclient import manager
 import os
-import time
 
 from net.readers.interface_reader import InterfaceReader
 from net.readers.lldp_reader import LldpReader
@@ -10,7 +10,8 @@ from net.readers.vlan_reader import VlanReader
 from utils.common import xml_preprocessing
 
 class Reader:
-    def __init__(self):
+    def __init__(self, config):
+        self.config = config
         self.nodes = {}
         self.result = {}
         self.xml_template_dict = {
@@ -23,8 +24,9 @@ class Reader:
     def __str__(self) -> str:
         return f'Reader = {vars(self)}'
 
-    def load_nodes(self, config):
-        for node in config.network_targets:
+    def load_nodes(self):
+        self.nodes = {}
+        for node in self.config.network_targets:
             self.nodes[node['name']] = node
 
     def load_xml_template(self, template_path):
@@ -37,23 +39,35 @@ class Reader:
             xml_result_content = result_file.read()
         return xml_result_content
     
-    def read(self, config, ctrl, collection_period = None, single_node = None):
-        nodes_to_process = []
-        if single_node is not None:
-            nodes_to_process.append(single_node)
-        else:
-            self.load_nodes(config)
-            nodes_to_process =self.nodes.items()
+    def read(self, ctrl, collection_period = None, single_node = None):
         while True:
+            nodes_to_process = {}
+            if single_node is not None:
+                print('single node  call')
+                print(single_node)
+                nodes_to_process[single_node['name']] = single_node
+                nodes_to_process = nodes_to_process.items()
+            else:
+                print('periodic call')
+                print('NODES TO PROCESS BEFORE')
+                print(nodes_to_process)
+                self.load_nodes()
+                nodes_to_process =self.nodes.items()
+                print('NODES TO PROCESS AFTER')
+                print(nodes_to_process)
             for node_name, node_content in nodes_to_process:
                 self.result[node_name] = {}
                 self.result[node_name]['metadata'] = self.read_metadata(node_content)
                 self.result[node_name]['interfaces'] = self.read_interfaces(node_content)
                 self.result[node_name]['lldp'] = self.read_lldp(node_content)
                 self.result[node_name]['vlan'] = self.read_vlan(node_content)
+            print('Reader.read(): Collection completed')
+            print('Reader.read(): Network_targets' + str(self.config.network_targets))
+            print('Reader.read(): Nodes to process' + str(nodes_to_process))
             ctrl.publish_collected_topology(topic = os.environ.get('AMQP_TOPOLOGY_COLLECTION_TOPIC'), message = self.result)
             if collection_period is None:
                 break
+            self.result = {} 
             time.sleep(int(collection_period))
            
     def read_metadata(self, node):
