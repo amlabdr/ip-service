@@ -10,7 +10,8 @@ from controller.controller import ControllerService
 def run():
 
     config = Config()
-    ctrl = ControllerService(config)
+    reader = Reader(config) 
+    ctrl = ControllerService(config, reader)
     
     # 1. get subnets
     subnets = json.loads(ctrl.get(url = ctrl.controller_rest_url+os.environ.get('CONTROLLER_QNET_SUBNET_PREFIX')))
