@@ -29,12 +29,10 @@ def run():
     periodic_collection_thread = Thread(target=ctrl.reader.read, args=(ctrl, os.environ.get('COLLECTION_REPEAT_TIMER')))
     periodic_collection_thread.start()
     time.sleep(1)
-
-    
-    ctrl.subcribe_to_topology_events(topic = 'topic://topology.event',
-                                     config = config,
-                                     network_reader = reader)
-    print("Done")
+    # start event listner on topology.event
+    subscribe_to_topolgy_events_thread = Thread(target=ctrl.subcribe_to_topology_events,
+                                                args=("topic://topology.event",))
+    subscribe_to_topolgy_events_thread.start()
     
 if __name__ == '__main__':
     run()
