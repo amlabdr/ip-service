@@ -23,7 +23,7 @@ def run():
             nodes = json.loads(ctrl.get(url=nodes_url))
             for node in nodes:
                 if node['type'] == 'ROUTER':
-                    ctrl.config.network_targets.append(node)
+                    ctrl.config.network_targets[node['id']] = node 
     print(ctrl.config.network_targets)
     # start periodic reader thread
     periodic_collection_thread = Thread(target=ctrl.reader.read, args=(ctrl, os.environ.get('COLLECTION_REPEAT_TIMER')))

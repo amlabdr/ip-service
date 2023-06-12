@@ -26,8 +26,9 @@ class Reader:
 
     def load_nodes(self):
         self.nodes = {}
-        for node in self.config.network_targets:
-            self.nodes[node['name']] = node
+        self.nodes = self.config.network_targets
+        #for node in self.config.network_targets:
+        #    self.nodes[node['name']] = node
 
     def load_xml_template(self, template_path):
         with open(template_path) as template_file:
@@ -45,17 +46,17 @@ class Reader:
             if single_node is not None:
                 print('single node  call')
                 print(single_node)
-                nodes_to_process[single_node['name']] = single_node
-                nodes_to_process = nodes_to_process.items()
+                nodes_to_process[single_node['id']] = single_node
             else:
                 print('periodic call')
                 print('NODES TO PROCESS BEFORE')
                 print(nodes_to_process)
                 self.load_nodes()
-                nodes_to_process =self.nodes.items()
+                nodes_to_process =self.nodes
                 print('NODES TO PROCESS AFTER')
                 print(nodes_to_process)
-            for node_name, node_content in nodes_to_process:
+            for node_content in nodes_to_process.values():
+                node_name = node_content['name']
                 self.result[node_name] = {}
                 self.result[node_name]['metadata'] = self.read_metadata(node_content)
                 self.result[node_name]['interfaces'] = self.read_interfaces(node_content)

@@ -49,7 +49,7 @@ class ReceiverHandler(MessagingHandler):
         if message['action'] == 'CREATED' or message['action'] == 'UPDATED' :
             #{'resource': 'NODE', 'action': 'CREATED', 'content': {'id': 20, 'name': 'dcqnet-ctrl-01', 'type': 'ROUTER', 'mgmtIp': '10.11.200.13', 'platform': 'OCNOS'}}
             print('controller.amqp.receiver: action is : '+ message['action'])
-            self.config.network_targets.append(message['content'])
+            self.config.network_targets[message['content']['id']] = message['content']
             print('controller.amqp.receiver: TARGET NODES')
             print(self.config.network_targets)
             # launch a network read, probably need to pass network reader as argument
@@ -61,7 +61,7 @@ class ReceiverHandler(MessagingHandler):
             # add subscription to interface status
         elif message['action'] == 'DELETED':
             print('controller.amqp.receiver: action is : '+ message['action'])
-            self.config.network_targets.pop()
+            self.config.network_targets.pop(message['content']['id'], 'Key not found')
             print('controller.amqp.receiver: TARGET NODES')
             print(self.config.network_targets)
             #destroy subscription to interface status
