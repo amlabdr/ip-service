@@ -1,0 +1,7 @@
+<filter type="subtree">
+      <interface-link-state-change-notification xmlns="http://www.ipinfusion.com/yang/ocnos/ipi-interface">
+        <name/>
+        <oper-status/>
+      </interface-link-state-change-notification>
+</filter>
+
