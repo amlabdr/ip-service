@@ -1,8 +1,15 @@
 import xmltodict
 import xml.etree.ElementTree as ET
 
+def xml_preprocessing_notification(xml_string):
+    tree_root = ET.fromstring(xml_string)
+    remove_xml_attributes(tree_root)
+    root_dict = xmltodict.parse(ET.tostring(tree_root))
+    root_dict = root_dict['ns0:notification']
+    root_dict.pop('@xmlns:ns0')
+    return root_dict
 
-def xml_preprocessing(xml_string):
+def xml_preprocessing_rpc_reply(xml_string):
     tree_root = ET.fromstring(xml_string)
     remove_xml_attributes(tree_root)
     root_dict = xmltodict.parse(ET.tostring(tree_root))

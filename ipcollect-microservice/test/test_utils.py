@@ -1,12 +1,12 @@
 import unittest
 from unittest.mock import patch
 
-from utils.common import xml_preprocessing
+from utils.common import xml_preprocessing_rpc_reply
 from utils.common import flatten_nested_list
 
 class TestUtils(unittest.TestCase):
     
-    def test_xml_preprocessing(self):
+    def test_xml_preprocessing_rpc_reply(self):
         # Define the test XML string
         xml_string = '''
             <ns0:rpc-reply xmlns:ns0="http://example.com">
@@ -16,7 +16,7 @@ class TestUtils(unittest.TestCase):
                 </data>
             </ns0:rpc-reply>
         '''
-        result = xml_preprocessing(xml_string)
+        result = xml_preprocessing_rpc_reply(xml_string)
 
         # Define the expected output
         expected_result = {

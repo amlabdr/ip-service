@@ -7,7 +7,7 @@ from net.readers.interface_reader import InterfaceReader
 from net.readers.lldp_reader import LldpReader
 from net.readers.metadata_reader import MetadataReader
 from net.readers.vlan_reader import VlanReader
-from utils.common import xml_preprocessing
+from utils.common import xml_preprocessing_rpc_reply
 
 class Reader:
     def __init__(self, config):
@@ -77,12 +77,12 @@ class Reader:
         connection_manager = self.connect_to_netconf_server(node)
         interface_template = self.load_xml_template(self.xml_template_dict['interfaces'])
         xml_result = connection_manager.get(filter=('subtree', interface_template)).xml
-        interface_dict = xml_preprocessing(xml_result)
+        interface_dict = xml_preprocessing_rpc_reply(xml_result)
 
         #now we can get the metadata and the MetadataReader will add the MAC address to the metadata result
         metadata_template = self.load_xml_template(self.xml_template_dict['metadata'])
         xml_result = connection_manager.get(filter=('subtree', metadata_template)).xml
-        metadata_dict = xml_preprocessing(xml_result)
+        metadata_dict = xml_preprocessing_rpc_reply(xml_result)
 
         reader = MetadataReader(metadata_dict, interface_dict)
         reader.read()
@@ -94,7 +94,7 @@ class Reader:
         connection_manager = self.connect_to_netconf_server(node)
         interface_template = self.load_xml_template(self.xml_template_dict['interfaces'])
         xml_result = connection_manager.get(filter=('subtree', interface_template)).xml
-        interface_dict = xml_preprocessing(xml_result)
+        interface_dict = xml_preprocessing_rpc_reply(xml_result)
         reader = InterfaceReader(interface_dict)
         reader.read()
         connection_manager.close_session()
@@ -104,7 +104,7 @@ class Reader:
         connection_manager = self.connect_to_netconf_server(node)
         lldp_template = self.load_xml_template(self.xml_template_dict['lldp'])
         xml_result = connection_manager.get(filter=('subtree', lldp_template)).xml
-        lldp_dict = xml_preprocessing(xml_result)
+        lldp_dict = xml_preprocessing_rpc_reply(xml_result)
         reader = LldpReader(lldp_dict)
         reader.read()
         connection_manager.close_session()
@@ -114,7 +114,7 @@ class Reader:
         connection_manager = self.connect_to_netconf_server(node)
         vlan_template = self.load_xml_template(self.xml_template_dict['vlan'])
         xml_result = connection_manager.get(filter=('subtree', vlan_template)).xml
-        vlan_dict = xml_preprocessing(xml_result)
+        vlan_dict = xml_preprocessing_rpc_reply(xml_result)
         reader = VlanReader(vlan_dict)
         reader.read()
         connection_manager.close_session()
