@@ -1,13 +1,17 @@
-from .amqp.receive import Receiver
-from .amqp.send import Sender
-from .request.request import Request
 import requests
 import time 
 import logging
 import jwt
 
+from net.notification_subscriber import NotificationSubscriber
+from .amqp.receive import Receiver
+from .amqp.send import Sender
+from .request.request import Request
+
 class ControllerService:
-    def __init__(self, config) -> None:
+    def __init__(self, config, reader) -> None:
+        self.config = config
+        self.reader = reader
         self.controller_rest_url = ( 'http://' + 
                                     config.controller_ip +
                                     ':' +
@@ -18,12 +22,12 @@ class ControllerService:
         self.username = config.controller_rest_username
         self.password = config.controller_rest_password
         self.token = None
-        self.token_acquired_time = None
-        
+        self.token_acquired_time = None        
         self.request = Request()
         self.collection_sender = Sender()
         self.status_sender = Sender()
-        self.event_receiver = Receiver()
+        self.event_receiver = Receiver(config)
+        self.notification_subscriber = NotificationSubscriber(config)
 
     def publish_collected_topology(self, topic, message):
         self.collection_sender.send(self.controller_amqp_url,topic, message)
@@ -31,8 +35,11 @@ class ControllerService:
     def publish_interface_status(self, topic, message):
         self.status_sender.send(self.controller_amqp_url,topic, message)
        
-    def subcribe_to_topology_events(self, topic, config, network_reader):
-        self.event_receiver.receive(self.controller_amqp_url,topic, config, network_reader)
+    def subcribe_to_topology_events(self, topic):
+        self.event_receiver.receive(self.controller_amqp_url, topic, self)
+
+    def subscribe_to_interface_status(self):
+        self.notification_subscriber.subscribe_to_interface_status()
     
     def login(self):
         login_url = self.controller_rest_url+'/api/login/user'

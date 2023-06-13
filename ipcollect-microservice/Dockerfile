@@ -19,13 +19,14 @@ ENV CONTROLLER_QNET_SUBNET_PREFIX '/api/topology/subnet/type/QNET'
 ENV CONTROLLER_NODES_PER_SUBNET_PREFIX '/api/topology/subnet/ID/nodes'
 
 # Netconf env variables
+ENV NETCONF_PORT '830'
 ENV NETCONF_USER 'ocnos'
 ENV NETCONF_PASSWORD 'ocnos'
 
 # AMQP vars
-
-ENV AMQP_TOPOLOGY_COLLECTION_TOPIC 'topic://topology.collection'
-ENV AMQP_TOPOLOGY_EVENTS_TOPIC 'topic://topology.events'
+ENV AMQP_TOPOLOGY_COLLECTION_TOPIC 'topic://topology.collect'
+ENV AMQP_TOPOLOGY_EVENTS_TOPIC 'topic://topology.event'
+ENV AMQP_TOPOLOGY_INTERFACE_STATUS_TOPIC 'topic://topology.status'
 
 # Other
 ENV COLLECTION_REPEAT_TIMER 60

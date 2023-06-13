@@ -8,13 +8,14 @@ from net.reader import Reader
 from controller.controller import ControllerService
 
 def run():
-
     config = Config()
-    ctrl = ControllerService(config)
+    reader = Reader(config) 
+    ctrl = ControllerService(config, reader)
     
-    # 1. get subnets
+    # get subnets
     subnets = json.loads(ctrl.get(url = ctrl.controller_rest_url+os.environ.get('CONTROLLER_QNET_SUBNET_PREFIX')))
-    # 2. get target nodes by subnet_id
+
+    # get target nodes by subnet_id
     for subnet in subnets:
         if subnet['name'] == 'dc-qnet':
             nodes_url = ctrl.controller_rest_url + os.environ.get('CONTROLLER_NODES_PER_SUBNET_PREFIX')
@@ -22,20 +23,23 @@ def run():
             nodes = json.loads(ctrl.get(url=nodes_url))
             for node in nodes:
                 if node['type'] == 'ROUTER':
-                    config.network_targets.append(node)
-    print(config.network_targets)
-    # 3. start periodic reader thread
-    reader = Reader() 
-    periodic_collection_thread = Thread(target=reader.read, args=(config, ctrl, os.environ.get('COLLECTION_REPEAT_TIMER')))
+                    ctrl.config.network_targets[node['id']] = node 
+    print(ctrl.config.network_targets)
+    
+    # start periodic reader thread
+    periodic_collection_thread = Thread(target=ctrl.reader.read, args=(ctrl, os.environ.get('COLLECTION_REPEAT_TIMER')))
     periodic_collection_thread.start()
     time.sleep(1)
+    
+    # start event listner on topology.event
+    subscribe_to_topolgy_events_thread = Thread(target=ctrl.subcribe_to_topology_events,
+                                                args=("topic://topology.event",))
+    subscribe_to_topolgy_events_thread.start()
 
-    
-    ctrl.subcribe_to_topology_events(topic = 'topic://topology.events',
-                                     config = config,
-                                     network_reader = reader)
-    print("Done")
-    
+    # start subscribtion to interface status thread
+    subscribe_to_interface_status_thread = Thread(target=ctrl.subscribe_to_interface_status)
+    subscribe_to_interface_status_thread.start()
+
 if __name__ == '__main__':
     run()
 

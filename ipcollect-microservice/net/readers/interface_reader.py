@@ -1,6 +1,5 @@
 from utils.common import get_value
 from utils.common import expand_range_string
-from utils.common import flatten_nested_list
 
 class InterfaceReader():
     def __init__(self, input_dict={}) -> None:
