@@ -37,7 +37,9 @@ def run():
     subscribe_to_topolgy_events_thread.start()
 
     # start subscribtion to interface status thread
-    #subscribe_to_interface_status_thread = Thread(target=ctrl.)
+    subscribe_to_interface_status_thread = Thread(target=ctrl.subscribe_to_interface_status)
+    subscribe_to_interface_status_thread.start()
+
 if __name__ == '__main__':
     run()
 

@@ -29,6 +29,7 @@ class NotificationReader():
 
     def read(self):
         result = self.get_interface_status_notification()
-        self.result["resourceName"] = self.target_node + '/' + result['interface-name']
-        self.result["resourceStatus"] = str.upper(result['oper-status'])
+        self.result["resourceName"] = self.target_node + '/' + str(get_value(result, ['interface-name']))
+        self.result["resourceStatus"] = str.upper(str(get_value(result,['oper-status'])))
+        self.result["resourceType"] = 'LTP' 
 

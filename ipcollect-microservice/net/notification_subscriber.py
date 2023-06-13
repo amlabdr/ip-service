@@ -8,16 +8,26 @@ from controller.amqp.send import Sender
 from utils.common import xml_preprocessing_notification
 from net.readers.notification_reader import NotificationReader
 
+filter = '''
+<filter type="subtree">
+      <interface-link-state-change-notification xmlns="http://www.ipinfusion.com/yang/ocnos/ipi-interface">
+        <name/>
+        <oper-status/>
+      </interface-link-state-change-notification>
+</filter>
+'''
+
 class NotificationSubscriber:
     def __init__(self, config):
         self.config = config
         self.result = {}
+        #add a dict of managers key=target_node value=manager 
+        #in order to close the session if a node is deleted
 
-    # add function that calls the while loop waiting for notifications in a new thread
     # pass manager as argument 
     def subscribe_to_interface_status(self):
-        for target_node in self.config.network_targets:
-            with manager.connect(host = target_node, 
+        for target_node in self.config.network_targets.values():
+            with manager.connect(host = target_node['mgmtIp'], 
                                  port = os.environ.get('NETCONF_PORT'),
                                  username = os.environ.get('NETCONF_USER'),
                                  password = os.environ.get('NETCONF_PASSWORD'),
@@ -30,7 +40,24 @@ class NotificationSubscriber:
                     exit(1) 
                 # Wait for and process the notification messages
                 # launch in thread
-                Thread wait_for_notifications = Thread(target=self.wait_for_notifications, args=(m, target_node))
+                #wait_for_notifications = Thread(target=self.wait_for_notifications, args=(m, target_node))
+                #wait_for_notifications.start()
+                while True:
+                    self.result = {}
+                    notification = m.take_notification(block=True)
+                    notification_dict = xml_preprocessing_notification(notification.notification_xml)
+                    notification_reader = NotificationReader(target_node['name'], notification_dict)
+                    notification_reader.read()
+                    self.result = notification_reader.result
+                    if self.result['resourceStatus'] != '':
+                    # send result to AMQP topic topology.status
+                        sender = Sender()
+                        sender.send(os.environ.get('CONTROLLER_IP'),
+                                    os.environ.get('AMQP_TOPOLOGY_INTERFACE_STATUS_TOPIC'),
+                                    self.result)
+
+                        print('Interface notification SENT')
+                        print(self.result)
     
     def wait_for_notifications(self, manager, target_node):
         while True:
@@ -43,8 +70,10 @@ class NotificationSubscriber:
             # send result to AMQP topic topology.status
             sender = Sender()
             sender.send(os.environ.get('CONTROLLER_IP'),
-                        os.environ.get('AMQP_INTERFACE_STATUS_TOPIC'),
+                        os.environ.get('AMQP_TOPOLOGY_INTERFACE_STATUS_TOPIC'),
                         self.result)
+            print('Interface notification SENT')
+            print(self.result)
             
 
     def remove_subscribtion_to_interface_status(self):
