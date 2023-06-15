@@ -1,14 +1,17 @@
-import xml.etree.ElementTree as ET
+import time
+import ncclient
+from ncclient import manager
+import os
+
 from net.readers.interface_reader import InterfaceReader
 from net.readers.lldp_reader import LldpReader
 from net.readers.metadata_reader import MetadataReader
 from net.readers.vlan_reader import VlanReader
-from utils.common import xml_preprocessing
-import ncclient
-from ncclient import manager
+from utils.common import xml_preprocessing_rpc_reply
 
 class Reader:
-    def __init__(self):
+    def __init__(self, config):
+        self.config = config
         self.nodes = {}
         self.result = {}
         self.xml_template_dict = {
@@ -21,9 +24,11 @@ class Reader:
     def __str__(self) -> str:
         return f'Reader = {vars(self)}'
 
-    def load_nodes(self, config):
-        for node in config.network_targets:
-            self.nodes[node['name']] = node
+    def load_nodes(self):
+        self.nodes = {}
+        self.nodes = self.config.network_targets
+        #for node in self.config.network_targets:
+        #    self.nodes[node['name']] = node
 
     def load_xml_template(self, template_path):
         with open(template_path) as template_file:
@@ -35,14 +40,36 @@ class Reader:
             xml_result_content = result_file.read()
         return xml_result_content
     
-    def read(self, config):
-        self.load_nodes(config)
-        for node_name, node_content in self.nodes.items():
-            self.result[node_name] = {}
-            self.result[node_name]['metadata'] = self.read_metadata(node_content)
-            self.result[node_name]['interfaces'] = self.read_interfaces(node_content)
-            self.result[node_name]['lldp'] = self.read_lldp(node_content)
-            self.result[node_name]['vlan'] = self.read_vlan(node_content)
+    def read(self, ctrl, collection_period = None, single_node = None):
+        while True:
+            nodes_to_process = {}
+            if single_node is not None:
+                print('single node  call')
+                print(single_node)
+                nodes_to_process[single_node['id']] = single_node
+            else:
+                print('periodic call')
+                print('NODES TO PROCESS BEFORE')
+                print(nodes_to_process)
+                self.load_nodes()
+                nodes_to_process =self.nodes
+                print('NODES TO PROCESS AFTER')
+                print(nodes_to_process)
+            for node_content in nodes_to_process.values():
+                node_name = node_content['name']
+                self.result[node_name] = {}
+                self.result[node_name]['metadata'] = self.read_metadata(node_content)
+                self.result[node_name]['interfaces'] = self.read_interfaces(node_content)
+                self.result[node_name]['lldp'] = self.read_lldp(node_content)
+                self.result[node_name]['vlan'] = self.read_vlan(node_content)
+            print('Reader.read(): Collection completed')
+            print('Reader.read(): Network_targets' + str(self.config.network_targets))
+            print('Reader.read(): Nodes to process' + str(nodes_to_process))
+            ctrl.publish_collected_topology(topic = os.environ.get('AMQP_TOPOLOGY_COLLECTION_TOPIC'), message = self.result)
+            if collection_period is None:
+                break
+            self.result = {} 
+            time.sleep(int(collection_period))
            
     def read_metadata(self, node):
         #since lldp only identifies neighbors by their MAC address, we need to retreive the MAC address of the device first
@@ -50,12 +77,12 @@ class Reader:
         connection_manager = self.connect_to_netconf_server(node)
         interface_template = self.load_xml_template(self.xml_template_dict['interfaces'])
         xml_result = connection_manager.get(filter=('subtree', interface_template)).xml
-        interface_dict = xml_preprocessing(xml_result)
+        interface_dict = xml_preprocessing_rpc_reply(xml_result)
 
         #now we can get the metadata and the MetadataReader will add the MAC address to the metadata result
         metadata_template = self.load_xml_template(self.xml_template_dict['metadata'])
         xml_result = connection_manager.get(filter=('subtree', metadata_template)).xml
-        metadata_dict = xml_preprocessing(xml_result)
+        metadata_dict = xml_preprocessing_rpc_reply(xml_result)
 
         reader = MetadataReader(metadata_dict, interface_dict)
         reader.read()
@@ -67,7 +94,7 @@ class Reader:
         connection_manager = self.connect_to_netconf_server(node)
         interface_template = self.load_xml_template(self.xml_template_dict['interfaces'])
         xml_result = connection_manager.get(filter=('subtree', interface_template)).xml
-        interface_dict = xml_preprocessing(xml_result)
+        interface_dict = xml_preprocessing_rpc_reply(xml_result)
         reader = InterfaceReader(interface_dict)
         reader.read()
         connection_manager.close_session()
@@ -77,7 +104,7 @@ class Reader:
         connection_manager = self.connect_to_netconf_server(node)
         lldp_template = self.load_xml_template(self.xml_template_dict['lldp'])
         xml_result = connection_manager.get(filter=('subtree', lldp_template)).xml
-        lldp_dict = xml_preprocessing(xml_result)
+        lldp_dict = xml_preprocessing_rpc_reply(xml_result)
         reader = LldpReader(lldp_dict)
         reader.read()
         connection_manager.close_session()
@@ -87,7 +114,7 @@ class Reader:
         connection_manager = self.connect_to_netconf_server(node)
         vlan_template = self.load_xml_template(self.xml_template_dict['vlan'])
         xml_result = connection_manager.get(filter=('subtree', vlan_template)).xml
-        vlan_dict = xml_preprocessing(xml_result)
+        vlan_dict = xml_preprocessing_rpc_reply(xml_result)
         reader = VlanReader(vlan_dict)
         reader.read()
         connection_manager.close_session()
@@ -95,10 +122,10 @@ class Reader:
 
     def connect_to_netconf_server(self, node):
         try:
-            return manager.connect_ssh(host = node['mgmtIP'],
+            return manager.connect_ssh(host = node['mgmtIp'],
                                 port = 830,
-                                username = node['username'],
-                                password = node['password'],
+                                username = os.environ.get('NETCONF_USER'),
+                                password = os.environ.get('NETCONF_PASSWORD'),
                                 hostkey_verify = False)
         except ncclient.NCClientError:
             return 

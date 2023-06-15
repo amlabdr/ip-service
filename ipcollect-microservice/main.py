@@ -1,38 +1,45 @@
-import json, time
+import json
+from threading import Thread
+import os
+import time
+
 from config.config import Config
 from net.reader import Reader
 from controller.controller import ControllerService
-from threading import Thread
 
 def run():
-
-    ctrl = ControllerService('10.11.200.125:5672')
-    authentication_period = 60 ## or read it from external file
-    thread_authentification = Thread(target=ctrl.controllerAuthentication,args=(authentication_period,))
-    thread_authentification.start()
-    time.sleep(1)
-    #get subnets
-    subnets = ctrl.get(url="http://10.11.200.125:8787/api/topology/subnet/type/QNET")
-
-    print(subnets)
-    return
-
     config = Config()
-    result = {}
-    reader = Reader() 
-    reader.read(config) # read from topology service (HTTP: login (return token), get subnets (with token), pick up one subnet (dc-qnet, id), read nodes w/ subent Id -> target_nodes)
-    result = reader.result
-    json_data = json.dumps(result,indent=2)
-    with open("/tmp/result.json", 'w') as json_file:
-        json_file.write(json_data)
-        json_file.close()
+    reader = Reader(config) 
+    ctrl = ControllerService(config, reader)
     
-    ctrl.publish_collected_topology(topic = 'topic://topology.collection', message = result)
-    ctrl.subcribe_to_topology_events(topic = 'topic://topology.events',
-                                     config = config,
-                                     network_reader = reader)
-    print("Done")
+    # get subnets
+    subnets = json.loads(ctrl.get(url = ctrl.controller_rest_url+os.environ.get('CONTROLLER_QNET_SUBNET_PREFIX')))
+
+    # get target nodes by subnet_id
+    for subnet in subnets:
+        if subnet['name'] == 'dc-qnet':
+            nodes_url = ctrl.controller_rest_url + os.environ.get('CONTROLLER_NODES_PER_SUBNET_PREFIX')
+            nodes_url = nodes_url.replace('ID', str(subnet['id']))
+            nodes = json.loads(ctrl.get(url=nodes_url))
+            for node in nodes:
+                if node['type'] == 'ROUTER':
+                    ctrl.config.network_targets[node['id']] = node 
+    print(ctrl.config.network_targets)
     
+    # start periodic reader thread
+    periodic_collection_thread = Thread(target=ctrl.reader.read, args=(ctrl, os.environ.get('COLLECTION_REPEAT_TIMER')))
+    periodic_collection_thread.start()
+    time.sleep(1)
+    
+    # start event listner on topology.event
+    subscribe_to_topolgy_events_thread = Thread(target=ctrl.subcribe_to_topology_events,
+                                                args=("topic://topology.event",))
+    subscribe_to_topolgy_events_thread.start()
+
+    # start subscribtion to interface status thread
+    subscribe_to_interface_status_thread = Thread(target=ctrl.subscribe_to_interface_status)
+    subscribe_to_interface_status_thread.start()
+
 if __name__ == '__main__':
     run()
 
