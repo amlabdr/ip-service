@@ -65,7 +65,7 @@ class Network_config:
         return config_list
 
     def config_network(self, event, backup = False):
-        device = event["content"]["host"]
+        device = event["content"]["mgmtIp"]
         configuration=event
         try:
             # Connect to the netconf server
@@ -75,7 +75,7 @@ class Network_config:
                 username = os.environ.get("NETCONF_USER"),
                 password = os.environ.get("NETCONF_PASSWORD"),
                 hostkey_verify=False,)
-            del configuration["content"]["host"]
+            del configuration["content"]["mgmtIp"]
             config_list = self.get_config_list(configuration)
             print(config_list)
             for configuration in config_list:
