@@ -4,7 +4,7 @@ from ncclient.operations import RPCError
 
 class Network_config:
     def __init__(self):
-        self.action_translator={"CREATED":"create", "DELETED":"delete", "UPDATED":"replace"}
+        self.action_translator={"CREATED":"create", "DELETING":"delete", "UPDATED":"replace"}
         self.netconf_xml_templates = os.environ.get('NETCONF_XML_TEMPLATES', 'ipconfig-microservice/network/ocnos_service/xml_templates/')
 
     
@@ -53,7 +53,7 @@ class Network_config:
     def get_config_list(self, configuration):
         config_list = []
         if (configuration["resource"] == "INTERFACE" or configuration["resource"] == "SVI") and configuration["action"] == "UPDATED":
-            configuration["action"] = "DELETED"
+            configuration["action"] = "DELETING"
             print(configuration)
             config_list.append(copy.deepcopy(configuration))
             configuration["action"] = "CREATED"
@@ -104,7 +104,7 @@ class Network_config:
         except Exception as e:
             logging.error(f"Error: {e}")
             return "DOWN"
-        if configuration["action"]=="DELETED":
+        if configuration["action"]=="DELETING":
             return "DELETED"
         else:
             return "UP"
