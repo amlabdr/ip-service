@@ -46,6 +46,8 @@ class ReceiverHandler(MessagingHandler):
             traceback.print_exc()
 
     def process_message(self, message):
+        if message['resource'] != 'NODE':
+            return
         if message['action'] == 'CREATED' or message['action'] == 'UPDATED' :
             #{'resource': 'NODE', 'action': 'CREATED', 'content': {'id': 20, 'name': 'dcqnet-ctrl-01', 'type': 'ROUTER', 'mgmtIp': '10.11.200.13', 'platform': 'OCNOS'}}
             print('controller.amqp.receiver: action is : '+ message['action'])
