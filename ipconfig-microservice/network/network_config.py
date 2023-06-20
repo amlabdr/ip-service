@@ -90,6 +90,7 @@ class Network_config:
                     print(traceback.format_exc())
                     print(e)
                     logging.error(f"Error editing configuration: {e}")
+                    return "DOWN"
                     
 
                 # Commit the changes and save them to the running configuration
@@ -99,6 +100,7 @@ class Network_config:
                 except RPCError as e:
                     logging.error(f"Error committing and saving changes: {e}")
                     netconfClient.discard_changes()
+                    return "DOWN"
         except Exception as e:
             logging.error(f"Error: {e}")
             return "DOWN"
