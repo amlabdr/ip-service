@@ -37,7 +37,7 @@ class Network_config:
 
     def fill_xml_config(self,config):
         # Read the XML template from the file
-        with open(self.netconf_xml_templates+"config.xml", "r") as f:
+        with open(self.netconf_xml_templates+"/config.xml", "r") as f:
             xml_template = f.read()
         xml_template = re.sub("{configuration}", config, xml_template)
         print(xml_template)

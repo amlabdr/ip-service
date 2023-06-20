@@ -4,7 +4,7 @@ WORKDIR /ipconfig-microservice
 
 COPY . /ipconfig-microservice
 
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip3 install --no-cache-dir -r requirements.txt
 
 # Controller env variables
 ENV CONTROLLER_URL 'http://10.11.200.125:8787'
@@ -28,6 +28,6 @@ ENV NETCONF_PASSWORD 'ocnos'
 ENV AMQP_TOPOLOGY_EVENTS_TOPIC 'topic://topology.event'
 
 # Other
-ENV NETCONF_XML_TEMPLATES '/ipconfig-microservice/net/xml_templates/'
+ENV NETCONF_XML_TEMPLATES '/ipconfig-microservice/network/ocnos_service/xml_templates'
 
 CMD ["python", "main.py"]
