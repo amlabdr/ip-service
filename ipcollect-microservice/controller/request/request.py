@@ -1,4 +1,7 @@
+import time
 import requests
+
+retry_delay = 10  # Delay in seconds between retry attempts
 
 class Request:
     def __init__(self):
@@ -12,10 +15,38 @@ class Request:
 
     def post_request_json(self, url, data, token = ''):
         head = {'Authorization': 'Bearer ' + token}
-        response = requests.post(url, json = data, headers = head)
-        return response
+        while True:
+            try:
+                response = requests.post(url, json = data, headers = head)
+                # Process the response
+                if response.status_code == 200:
+                    # Server is available and responded successfully
+                    return response
+                else:
+                    # Server responded with an error status code
+                    print("Request failed with status code:", response.status_code)
+            except requests.exceptions.RequestException as e:
+                # Exception occurred during the request
+                print("An error occurred:", e)
+            # Wait for the retry delay before attempting the request again
+            time.sleep(retry_delay)
     
     def get_request(self, url, token = ""):
         head = {'Authorization': 'Bearer ' + token}
-        response = requests.get(url, headers = head)
-        return response.text
+        while True:
+            try:
+                response = requests.get(url, headers = head)
+                # Process the response
+                if response.status_code == 200:
+                    # Server is available and responded successfully
+                    return response.text
+                else:
+                    # Server responded with an error status code
+                    print("Request failed with status code:", response.status_code)
+            except requests.exceptions.RequestException as e:
+                # Exception occurred during the request
+                print("An error occurred:", e)
+            # Wait for the retry delay before attempting the request again
+            time.sleep(retry_delay)
+
+

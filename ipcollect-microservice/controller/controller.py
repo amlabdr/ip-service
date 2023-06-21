@@ -1,4 +1,3 @@
-import requests
 import time 
 import logging
 import jwt
@@ -43,7 +42,7 @@ class ControllerService:
     
     def login(self):
         login_url = self.controller_rest_url+'/api/login/user'
-        response = requests.post(login_url, json={'username': self.username, 'password': self.password})
+        response = self.request.post_request_json(login_url, data={'username': self.username, 'password': self.password}, token='')
         if response.status_code == 200:
             self.token = response.json().get('token')
             decoded_token = jwt.decode(self.token, options={'verify_signature': False})
