@@ -1,8 +1,8 @@
 <network-instances xmlns="http://openconfig.net/yang/network-instance">
      <network-instance>
-          <name>1</name>
+          <name>{bridgeGroup}</name>
           <config>
-               <name>1</name>
+               <name>{bridgeGroup}</name>
                <type xmlns:oc-ni-types="http://openconfig.net/yang/network-instance-types">
                     oc-ni-types:L2L3</type>
                <enabled>true</enabled>

@@ -37,7 +37,7 @@
            "vlanIds":[2,33],
            "interfaceName":"xe1",
            "bridgeGroup":"1",
-           "mode":"trunk|access",
+           "mode":"Trunk|Access",
            "defaultVlan":"2"
            }
         },
