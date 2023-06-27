@@ -16,17 +16,18 @@ class Receiver():
     def __init__(self):
         super(Receiver, self).__init__()
         
-    def receive_event(self, server, topic, network):
+    def receive_event(self, server, topic, network, supported):
         print("will start the rcv")
-        Container(event_Receiver_handller(server,topic, network)).run()
+        Container(event_Receiver_handller(server,topic, network, supported)).run()
 
 
 class event_Receiver_handller(MessagingHandler):
-    def __init__(self, server,topic, network):
+    def __init__(self, server,topic, network,supported):
         super(event_Receiver_handller, self).__init__()
         self.server = server
         self.topic = topic
         self.network = network
+        self.supported = supported
         logging.info("Agent will start listning for events in the topic: {}".format(self.topic))
         
 
@@ -43,6 +44,8 @@ class event_Receiver_handller(MessagingHandler):
     def on_message(self, event):
         try:
             jsonData = json.loads(event.message.body)
+            if jsonData["resource"] not in self.supported:
+                return
             logging.info("msg received {}".format(jsonData))
             status = self.process_event(jsonData)
             topic='topic://'+'topology.status'

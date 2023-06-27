@@ -4,7 +4,7 @@ from ncclient.operations import RPCError
 
 class Network_config:
     def __init__(self):
-        self.action_translator={"CREATED":"create", "DELETED":"delete", "UPDATED":"replace"}
+        self.action_translator={"CREATED":"create", "DELETING":"delete", "UPDATED":"replace"}
         self.netconf_xml_templates = os.environ.get('NETCONF_XML_TEMPLATES', 'ipconfig-microservice/network/ocnos_service/xml_templates/')
 
     
@@ -37,7 +37,7 @@ class Network_config:
 
     def fill_xml_config(self,config):
         # Read the XML template from the file
-        with open(self.netconf_xml_templates+"config.xml", "r") as f:
+        with open(self.netconf_xml_templates+"/config.xml", "r") as f:
             xml_template = f.read()
         xml_template = re.sub("{configuration}", config, xml_template)
         print(xml_template)
@@ -53,7 +53,7 @@ class Network_config:
     def get_config_list(self, configuration):
         config_list = []
         if (configuration["resource"] == "INTERFACE" or configuration["resource"] == "SVI") and configuration["action"] == "UPDATED":
-            configuration["action"] = "DELETED"
+            configuration["action"] = "DELETING"
             print(configuration)
             config_list.append(copy.deepcopy(configuration))
             configuration["action"] = "CREATED"
@@ -65,7 +65,7 @@ class Network_config:
         return config_list
 
     def config_network(self, event, backup = False):
-        device = event["content"]["mgmtIp"]
+        device = event["content"]["host"]
         configuration=event
         try:
             # Connect to the netconf server
@@ -75,7 +75,7 @@ class Network_config:
                 username = os.environ.get("NETCONF_USER"),
                 password = os.environ.get("NETCONF_PASSWORD"),
                 hostkey_verify=False,)
-            del configuration["content"]["mgmtIp"]
+            del configuration["content"]["host"]
             config_list = self.get_config_list(configuration)
             print(config_list)
             for configuration in config_list:
@@ -90,6 +90,7 @@ class Network_config:
                     print(traceback.format_exc())
                     print(e)
                     logging.error(f"Error editing configuration: {e}")
+                    return "DOWN"
                     
 
                 # Commit the changes and save them to the running configuration
@@ -99,10 +100,11 @@ class Network_config:
                 except RPCError as e:
                     logging.error(f"Error committing and saving changes: {e}")
                     netconfClient.discard_changes()
+                    return "DOWN"
         except Exception as e:
             logging.error(f"Error: {e}")
             return "DOWN"
-        if configuration["action"]=="DELETED":
+        if configuration["action"]=="DELETING":
             return "DELETED"
         else:
             return "UP"
