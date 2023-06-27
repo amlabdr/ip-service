@@ -1,13 +1,17 @@
-FROM  python:3.8-slim-buster
+FROM  python:3
 
 WORKDIR /ipcollection-microservice
 
 COPY . /ipcollection-microservice
 
-RUN pip install --no-cache-dir -r requirements.txt
+# proxy env variables
+ENV http_proxy=http://10.11.200.200:3131
+ENV https_proxy=http://10.11.200.200:3131
+
+RUN pip3 install --no-cache-dir -r requirements.txt
+
 
 # Controller env variables
-ENV CONTROLLER_REST_URL 'http://10.11.200.125:8787/'
 ENV CONTROLLER_IP '10.11.200.125'
 ENV CONTROLLER_REST_USERNAME 'admin'
 ENV CONTROLLER_REST_PASSWORD 'admin'
@@ -33,4 +37,4 @@ ENV COLLECTION_REPEAT_TIMER 60
 ENV NET_TARGETS '/ipcollect-microservice/config/network_targets.dot'
 ENV NETCONF_XML_TEMPLATES '/ipcollect-microservice/net/xml_templates/'
 
-CMD ["python", "main.py"]
+CMD ["python3", "main.py"]
