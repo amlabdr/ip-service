@@ -46,7 +46,13 @@ class Network_config:
     
     def get_template_file(self, configuration):
         if configuration["resource"] == "VLAN_MEMBER":
-            template_file = self.netconf_xml_templates+"/"+configuration["resource"]+"_"+configuration["content"]["mode"]+".xml"
+            if configuration["content"]["mode"] == "Access":
+                template_file = self.netconf_xml_templates+"/VLAN_MEMBER_Access.xml"
+            elif configuration["content"]["mode"] == "Trunk":
+                template_file = self.netconf_xml_templates+"/VLAN_MEMBER_Trunk.xml"
+            elif configuration["content"]["mode"] == "None":
+                template_file = self.netconf_xml_templates+"/VLAN_MEMBER_None.xml"
+            else: pass
         else:
             template_file = self.netconf_xml_templates+"/"+configuration["resource"]+".xml"
         return template_file
