@@ -31,5 +31,9 @@
                <tpid xmlns="http://openconfig.net/yang/vlan">TPID_0X8100</tpid>
                <type xmlns:ianaift="urn:ietf:params:xml:ns:yang:iana-if-type">ianaift:ethernetCsmacd</type>
           </config>
+          <ethernet xmlns="http://openconfig.net/yang/interfaces/ethernet">
+               <switched-vlan xmlns="http://openconfig.net/yang/vlan">
+               </switched-vlan>
+          </ethernet>
      </interface>
 </interfaces>
