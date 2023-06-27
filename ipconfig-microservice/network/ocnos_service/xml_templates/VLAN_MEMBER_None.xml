@@ -24,7 +24,7 @@
      </network-instance>
 </network-instances>
 <interfaces xmlns="http://openconfig.net/yang/interfaces">
-     <interface operation= "delete">
+     <interface operation= "replace">
           <name>{interfaceName}</name>
           <config>
                <name>{interfaceName}</name>
