@@ -1,3 +1,28 @@
+<network-instances xmlns="http://openconfig.net/yang/network-instance">
+     <network-instance>
+          <name>1</name>
+          <config>
+               <name>1</name>
+               <type xmlns:oc-ni-types="http://openconfig.net/yang/network-instance-types">
+                    oc-ni-types:L2L3</type>
+               <enabled>true</enabled>
+               <bridge-protocol xmlns="http://www.ipinfusion.com/yang/ocnos/ipi-oc-ni-augments">
+                    ieee-vlan-bridge</bridge-protocol>
+          </config>
+          <vlans>
+               {<vlan><vlan-id>{vlanIds}</vlan-id><config><vlan-id>{vlanIds}</vlan-id><status>ACTIVE</status></config></vlan>}
+          </vlans>
+          <interfaces>
+               <interface>
+                    <id>{interfaceName}</id>
+                    <config>
+                         <interface>{interfaceName}</interface>
+                         <id>{interfaceName}</id>
+                    </config>
+               </interface>
+          </interfaces>
+     </network-instance>
+</network-instances>
 <interfaces xmlns="http://openconfig.net/yang/interfaces">
      <interface operation= "delete">
           <name>{interfaceName}</name>
