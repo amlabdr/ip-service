@@ -1,26 +1,25 @@
-<network-instances xmlns="http://openconfig.net/yang/network-instance">
-     <network-instance>
-          <name>1</name>
+<interfaces xmlns="http://openconfig.net/yang/interfaces">
+     <interface operation="{operation}">
+          <name>{interfaceName}</name>
           <config>
-               <name>1</name>
-               <type xmlns:oc-ni-types="http://openconfig.net/yang/network-instance-types">
-                    oc-ni-types:L2L3</type>
+               <name>{interfaceName}</name>
+               <tpid xmlns="http://openconfig.net/yang/vlan">TPID_0X8100</tpid>
+               <type xmlns:ianaift="urn:ietf:params:xml:ns:yang:iana-if-type">ianaift:ethernetCsmacd</type>
                <enabled>true</enabled>
-               <bridge-protocol xmlns="http://www.ipinfusion.com/yang/ocnos/ipi-oc-ni-augments">
-                    ieee-vlan-bridge</bridge-protocol>
           </config>
-          <vlans operation= "replace">
-               {<vlan><vlan-id>{vlanIds}</vlan-id><config><vlan-id>{vlanIds}</vlan-id><status>ACTIVE</status></config></vlan>}
-          </vlans>
-          <interfaces>
-               <interface>
-                    <id>{interfaceName}</id>
+          <subinterfaces>
+               <subinterface>
+                    <index>0</index>
                     <config>
-                         <enable-switchport1>false</enable-switchport1>
-                         <interface>{interfaceName}</interface>
-                         <id>{interfaceName}</id>
+                         <index>0</index>
                     </config>
-               </interface>
-          </interfaces>
-     </network-instance>
-</network-instances>
+                    <ipv4 xmlns="http://openconfig.net/yang/interfaces/ip">
+                         <enabled>false</enabled>
+                    </ipv4>
+                    <ipv6 xmlns="http://openconfig.net/yang/interfaces/ip">
+                         <enabled>false</enabled>
+                    </ipv6>
+               </subinterface>
+     </subinterfaces>
+     </interface>
+</interfaces>
