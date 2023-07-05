@@ -1,29 +1,28 @@
 <interfaces xmlns="http://openconfig.net/yang/interfaces">
     <interface>
-        <name>vlan{bridgeGroup}</name>
-        <config>
-            <name>vlan{bridgeGroup}</name>
-            <enabled>true</enabled>
-            <type xmlns:ianaift="urn:ietf:params:xml:ns:yang:iana-if-type">ianaift:l2vlan</type>
-        </config>
-        <subinterfaces>
-            <subinterface>
-                <index>{vlanId}</index>
+      <name>vlan{bridgeGroup}.{vlanId}</name> <!-- Replace X with the VLAN interface number -->
+      <config>
+        <type xmlns:ianaift="urn:ietf:params:xml:ns:yang:iana-if-type">ianaift:l2vlan</type>
+        <enabled>true</enabled>
+      </config>
+      <subinterfaces>
+        <subinterface>
+          <index>0</index>
+          <config>
+            <index>0</index>
+          </config>
+          <ipv4 xmlns="http://openconfig.net/yang/interfaces/ip" operation="{operation}">
+            <addresses>
+              <address>
+                <ip>{address}</ip> <!-- Replace with the desired IP address -->
                 <config>
-                    <index>{vlanId}</index>
+                  <ip>{address}</ip> <!-- Same as above -->
+                  <prefix-length>{mask}</prefix-length> <!-- Replace with the desired prefix length -->
                 </config>
-                <ipv4 xmlns="http://openconfig.net/yang/interfaces/ip" operation="{operation}">
-                    <addresses >
-                        <address >
-                            <ip>{address}</ip>
-                            <config>
-                                <ip>{address}</ip>
-                                <prefix-length>{mask}</prefix-length>
-                            </config>
-                        </address>
-                    </addresses>
-                </ipv4>
-            </subinterface>
-        </subinterfaces>
+              </address>
+            </addresses>
+          </ipv4>
+        </subinterface>
+      </subinterfaces>
     </interface>
 </interfaces>

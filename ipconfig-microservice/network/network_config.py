@@ -64,8 +64,6 @@ class Network_config:
             config_list.append(copy.deepcopy(configuration))
             configuration["action"] = "CREATED"
             config_list.append(copy.deepcopy(configuration))
-        elif configuration["resource"] == "SVI":
-            pass
         else:
             config_list.append(configuration)
         return config_list
