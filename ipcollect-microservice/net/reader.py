@@ -1,4 +1,5 @@
 import time
+from jwt.api_jwt import json
 import ncclient
 from ncclient import manager
 import os
@@ -46,14 +47,12 @@ class Reader:
             if single_node is not None:
                 print('single node  call')
                 print(single_node)
-                nodes_to_process[single_node['resourceId']] = single_node
+                nodes_to_process[single_node['name']] = single_node
             else:
                 print('periodic call')
-                print('NODES TO PROCESS BEFORE')
-                print(nodes_to_process)
                 self.load_nodes()
                 nodes_to_process =self.nodes
-                print('NODES TO PROCESS AFTER')
+                print('NODES TO PROCESS: ')
                 print(nodes_to_process)
             for node_content in nodes_to_process.values():
                 node_name = node_content['name']
@@ -63,8 +62,9 @@ class Reader:
                 self.result[node_name]['lldp'] = self.read_lldp(node_content)
                 self.result[node_name]['vlan'] = self.read_vlan(node_content)
             print('Reader.read(): Collection completed')
-            print('Reader.read(): Network_targets' + str(self.config.network_targets))
-            print('Reader.read(): Nodes to process' + str(nodes_to_process))
+            #print('Reader.read(): Network_targets' + str(self.config.network_targets))
+            print('Reader.read(): Nodes processed' + str(nodes_to_process))
+            print('Collection: '+json.dumps(self.result, indent=2))
             ctrl.publish_collected_topology(topic = os.environ.get('AMQP_TOPOLOGY_COLLECTION_TOPIC'), message = self.result)
             if collection_period is None:
                 break
