@@ -46,7 +46,7 @@ class Reader:
             if single_node is not None:
                 print('single node  call')
                 print(single_node)
-                nodes_to_process[single_node['id']] = single_node
+                nodes_to_process[single_node['resourceId']] = single_node
             else:
                 print('periodic call')
                 print('NODES TO PROCESS BEFORE')
