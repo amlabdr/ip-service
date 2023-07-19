@@ -36,7 +36,6 @@
                     <config>
                          <interface-mode>ACCESS</interface-mode>
                          {<access-vlan>{vlanIds}</access-vlan>}
-                         <native-vlan>{defaultVlan}</native-vlan>
                     </config>
                </switched-vlan>
           </ethernet>
