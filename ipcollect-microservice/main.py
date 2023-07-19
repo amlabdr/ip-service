@@ -33,7 +33,7 @@ def run():
     
     # start event listner on topology.event
     subscribe_to_topolgy_events_thread = Thread(target=ctrl.subcribe_to_topology_events,
-                                                args=("topic://topology.event",))
+                                                args=(os.environ.get('AMQP_CONFIGURATION_EVENTS_TOPIC'),))
     subscribe_to_topolgy_events_thread.start()
 
     # start subscribtion to interface status thread

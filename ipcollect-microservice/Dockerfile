@@ -29,7 +29,7 @@ ENV NETCONF_PASSWORD='ocnos'
 
 # AMQP vars
 ENV AMQP_TOPOLOGY_COLLECTION_TOPIC='topic://topology.collect'
-ENV AMQP_TOPOLOGY_EVENTS_TOPIC='topic://configuration.event'
+ENV AMQP_CONFIGURATION_EVENTS_TOPIC='topic://configuration.event'
 ENV AMQP_TOPOLOGY_INTERFACE_STATUS_TOPIC='topic://topology.status'
 
 # Other
