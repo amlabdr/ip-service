@@ -36,6 +36,7 @@
                     <config>
                          <interface-mode>trunk</interface-mode>
                          {<trunk-vlans>{vlanIds}</trunk-vlans>}
+                         <native-vlan>{defaultVlan}</native-vlan>
                     </config>
                </switched-vlan>
           </ethernet>
