@@ -23,7 +23,7 @@ def run():
             nodes = json.loads(ctrl.get(url=nodes_url))
             for node in nodes:
                 if node['type'] == 'ROUTER':
-                    ctrl.config.network_targets[node['id']] = node 
+                    ctrl.config.network_targets[node['name']] = node 
     print(ctrl.config.network_targets)
     
     # start periodic reader thread
