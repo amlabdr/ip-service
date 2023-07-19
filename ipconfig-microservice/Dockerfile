@@ -25,7 +25,7 @@ ENV NETCONF_PASSWORD 'ocnos'
 
 # AMQP vars
 
-ENV AMQP_TOPOLOGY_EVENTS_TOPIC 'topic://configuration.event'
+ENV AMQP_CONFIGURATION_EVENTS_TOPIC 'topic://configuration.event'
 
 # Other
 ENV NETCONF_XML_TEMPLATES '/ipconfig-microservice/network/ocnos_service/xml_templates'
