@@ -6,7 +6,10 @@ class Network_config:
     def __init__(self):
         self.action_translator={"CREATED":"create", "DELETING":"delete", "UPDATED":"replace"}
         self.netconf_xml_templates = os.environ.get('NETCONF_XML_TEMPLATES', 'ipconfig-microservice/network/ocnos_service/xml_templates/')
-
+        self.status_msgs = {"default":{"success":"UP","fail":"DOWN"},
+                            "SVI":{"success":"UP","fail":"DELETED"},
+                            "INTERFACE":{"success":"UP","fail":"DELETED"}
+                            }
     
     def fill_xml_template(self,template_file, configuration):
         # Read the XML template from the file
@@ -58,7 +61,7 @@ class Network_config:
         return template_file
     def get_config_list(self, configuration):
         config_list = []
-        if (configuration["resource"] == "INTERFACE" or configuration["resource"] == "SVI") and configuration["action"] == "UPDATED":
+        if (configuration["resource"] == "INTERFACE" or configuration["resource"] == "SVI" or configuration["resource"] == "IP_ROUTER" ) and configuration["action"] == "UPDATED":
             configuration["action"] = "DELETING"
             print(configuration)
             config_list.append(copy.deepcopy(configuration))
@@ -94,7 +97,10 @@ class Network_config:
                     print(traceback.format_exc())
                     print(e)
                     logging.error(f"Error editing configuration: {e}")
-                    return "DOWN"
+                    if configuration["resource"] in self.status_msgs:
+                        return self.status_msgs[configuration["resource"]]["fail"]
+                    else:
+                        return self.status_msgs["default"]["fail"]
                     
 
                 # Commit the changes and save them to the running configuration
@@ -104,11 +110,13 @@ class Network_config:
                 except RPCError as e:
                     logging.error(f"Error committing and saving changes: {e}")
                     netconfClient.discard_changes()
-                    return "DOWN"
+                    if configuration["resource"] in self.status_msgs:
+                        return self.status_msgs[configuration["resource"]]["fail"]
+                    else:
+                        return self.status_msgs["default"]["fail"]
         except Exception as e:
             logging.error(f"Error: {e}")
-            return "DOWN"
         if configuration["action"]=="DELETING":
             return "DELETED"
         else:
-            return "UP"
+            return self.status_msgs["default"]["success"]
