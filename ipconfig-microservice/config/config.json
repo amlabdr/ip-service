@@ -5,6 +5,6 @@
   "CONTROLLER_NODES_PER_SUBNET_PREFIX":"/api/topology/subnet/ID/nodes",
   "AMQP_CONFIGURATION_EVENTS_TOPIC":"topic://configuration.event",
   "NET_TARGETS":"/ipconfig-microservice/config/network_targets.dot",
-  "NETCONF_XML_TEMPLATES":"/ipconfig-microservice/net/xml_templates",
+  "NETCONF_XML_TEMPLATES":"/ipconfig-microservice/network/ocnos_service/xml_templates",
   "CONTROLLER_REST_PORT":"8787"
 }
