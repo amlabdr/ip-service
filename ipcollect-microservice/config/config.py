@@ -10,12 +10,21 @@ class Config:
         self.controller_rest_username = os.environ.get('CONTROLLER_REST_USERNAME', 'admin')
         self.controller_rest_password = os.environ.get('CONTROLLER_REST_PASSWORD', 'admin')
         
-        self.network_targets_file_path = os.environ.get('NET_TARGETS', 'config/network_targets.dot')
+        self.config_file_path = os.environ.get('CONFIG', 'config/config.json')
         self.network_targets = {}
-        #self.load_nodes()
+        self.load_nodes()
 
     def load_nodes(self):
-        with open(self.network_targets_file_path) as f:
-            network_targets = f.read()
-            self.network_targets = json.loads(network_targets)
-            logging.info('reading network targets from file successful')
+        with open(self.config_file_path, 'r') as f:
+            config = json.load(f)
+            self.controller_login_prefix = config.get("CONTROLLER_LOGIN_PREFIX")
+            self.controller_qnet_subnet_prefix = config.get("CONTROLLER_QNET_SUBNET_PREFIX")
+            self.controller_nodes_per_subnet_prefix = config.get("CONTROLLER_NODES_PER_SUBNET_PREFIX")
+            self.amqp_topology_collection_topic = config.get("AMQP_TOPOLOGY_COLLECTION_TOPIC")
+            self.amqp_configuration_events_topic = config.get("AMQP_CONFIGURATION_EVENTS_TOPIC")
+            self.amqp_topology_interface_status_topic = config.get("AMQP_TOPOLOGY_INTERFACE_STATUS_TOPIC")
+            self.collection_repeat_timer = config.get("COLLECTION_REPEAT_TIMER")
+            self.net_targets = config.get("NET_TARGETS")
+            self.netconf_xml_templates = config.get("NETCONF_XML_TEMPLATES")
+            self.controller_rest_port = config.get("CONTROLLER_REST_PORT")
+        logging.info('reading network targets from file successful')
