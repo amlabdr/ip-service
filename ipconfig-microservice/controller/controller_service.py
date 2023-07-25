@@ -30,9 +30,11 @@ class Controller_service:
     
     def subscribe2events(self,network):
         logging.basicConfig(level=logging.INFO)
-        topic = os.environ.get('AMQP_CONFIGURATION_EVENTS_TOPIC')
+        topic = self.cfg.amqp_configuration_events_topic
         url = self.cfg.controller_ip +":"+ self.cfg.controller_amqp_port
         logging.info("Agent will start lesstning for events from the controller")
+        print("url: ", url)
+        print("topic: ", topic)
         receiver = Receiver()
         supported = ["BRIDGE_GROUPE", "INTERFACE", "PORT", "SVI", "VLAN_MEMBER", "VLAN","IP_ROUTER"]
         receiver.receive_event(url,topic, network=network,supported=supported)
