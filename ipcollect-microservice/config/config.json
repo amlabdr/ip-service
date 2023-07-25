@@ -9,5 +9,5 @@
   "COLLECTION_REPEAT_TIMER":60,
   "NET_TARGETS":"/ipcollect-microservice/config/network_targets.dot",
   "NETCONF_XML_TEMPLATES":"/ipcollect-microservice/net/xml_templates/",
-  "CONTROLLER_REST_PORT":"8787",
+  "CONTROLLER_REST_PORT":"8787"
 }
