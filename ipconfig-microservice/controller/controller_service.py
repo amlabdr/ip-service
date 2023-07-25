@@ -7,7 +7,6 @@ from .amqp.receive import Receiver
 class Controller_service:
     def __init__(self,config):
         self.cfg = config
-        self.url = self.cfg.controller_url
         self.http_handller = httpHandller
         self.token = ""
 
@@ -32,8 +31,8 @@ class Controller_service:
     def subscribe2events(self,network):
         logging.basicConfig(level=logging.INFO)
         topic = os.environ.get('AMQP_CONFIGURATION_EVENTS_TOPIC')
-        url = os.environ.get('CONTROLLER_IP') +":"+ os.environ.get('CONTROLLER_AMQP_PORT')
+        url = self.cfg.controller_ip +":"+ self.cfg.controller_amqp_port
         logging.info("Agent will start lesstning for events from the controller")
         receiver = Receiver()
-        supported = ["BRIDGE_GROUPE", "INTERFACE", "PORT", "SVI", "VLAN_MEMBER", "VLAN"]
+        supported = ["BRIDGE_GROUPE", "INTERFACE", "PORT", "SVI", "VLAN_MEMBER", "VLAN","IP_ROUTER"]
         receiver.receive_event(url,topic, network=network,supported=supported)

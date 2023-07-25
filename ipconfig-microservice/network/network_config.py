@@ -3,9 +3,9 @@ from ncclient import manager
 from ncclient.operations import RPCError
 
 class Network_config:
-    def __init__(self):
+    def __init__(self,config):
         self.action_translator={"CREATED":"create", "DELETING":"delete", "UPDATED":"replace"}
-        self.netconf_xml_templates = os.environ.get('NETCONF_XML_TEMPLATES', 'ipconfig-microservice/network/ocnos_service/xml_templates/')
+        self.netconf_xml_templates = config.netconf_xml_templates
         self.status_msgs = {"default":{"success":"UP","fail":"DOWN"},
                             "SVI":{"success":"UP","fail":"DELETED"},
                             "INTERFACE":{"success":"UP","fail":"DELETED"}
