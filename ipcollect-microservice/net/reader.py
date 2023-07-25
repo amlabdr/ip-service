@@ -65,7 +65,7 @@ class Reader:
             #print('Reader.read(): Network_targets' + str(self.config.network_targets))
             print('Reader.read(): Nodes processed' + str(nodes_to_process))
             print('Collection: '+json.dumps(self.result, indent=2))
-            ctrl.publish_collected_topology(topic = os.environ.get('AMQP_TOPOLOGY_COLLECTION_TOPIC'), message = self.result)
+            ctrl.publish_collected_topology(topic = self.config.amqp_topology_collection_topic, message = self.result)
             if collection_period is None:
                 break
             self.result = {} 

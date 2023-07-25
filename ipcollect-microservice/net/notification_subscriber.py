@@ -52,8 +52,8 @@ class NotificationSubscriber:
                     if self.result['resourceStatus'] != '':
                     # send result to AMQP topic topology.status
                         sender = Sender()
-                        sender.send(os.environ.get('CONTROLLER_IP'),
-                                    os.environ.get('AMQP_TOPOLOGY_INTERFACE_STATUS_TOPIC'),
+                        sender.send(self.config.controller_ip,
+                                    self.config.amqp_topology_interface_status_topic,
                                     self.result)
 
                         print('Interface notification SENT')
@@ -69,8 +69,8 @@ class NotificationSubscriber:
             self.result = notification_reader.result
             # send result to AMQP topic topology.status
             sender = Sender()
-            sender.send(os.environ.get('CONTROLLER_IP'),
-                        os.environ.get('AMQP_TOPOLOGY_INTERFACE_STATUS_TOPIC'),
+            sender.send(self.config.controller_ip,
+                        self.config.amqp_topology_interface_status_topic,
                         self.result)
             print('Interface notification SENT')
             print(self.result)

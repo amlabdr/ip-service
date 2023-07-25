@@ -1,0 +1,13 @@
+
+{
+  "CONTROLLER_LOGIN_PREFIX":"/api/login/user",
+  "CONTROLLER_QNET_SUBNET_PREFIX":"/api/topology/subnet/type/QNET",
+  "CONTROLLER_NODES_PER_SUBNET_PREFIX":"/api/topology/subnet/ID/nodes",
+  "AMQP_TOPOLOGY_COLLECTION_TOPIC":"topic://topology.collect",
+  "AMQP_CONFIGURATION_EVENTS_TOPIC":"topic://configuration.event",
+  "AMQP_TOPOLOGY_INTERFACE_STATUS_TOPIC":"topic://topology.status",
+  "COLLECTION_REPEAT_TIMER":60,
+  "NET_TARGETS":"/ipcollect-microservice/config/network_targets.dot",
+  "NETCONF_XML_TEMPLATES":"/ipcollect-microservice/net/xml_templates/",
+  "CONTROLLER_REST_PORT":"8787"
+}
