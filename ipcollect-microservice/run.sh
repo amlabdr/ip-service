@@ -61,7 +61,7 @@ fi
 
 # Push the tagged image to Docker Hub
 if [ "$PUSH_IMAGE" = true ]; then
-    docker tag multiverse-gui multiversenms/ipcollect:latest
+    docker tag multiverse-ipcollect multiversenms/ipcollect:latest
     docker push multiversenms/ipcollect:latest
 fi
 
