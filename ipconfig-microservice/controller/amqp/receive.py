@@ -9,7 +9,7 @@ from proton.reactor import Container
 from .send import Sender
 
 sender = Sender()
-RESOURCE = {"PORT":"LTP","BRIDGE_GROUP":"LTP","INTERFACE":"CTP","SVI":"CTP","VLAN":"CTP","VLAN_MEMBER":"CTP"}
+RESOURCE = {"PORT":"LTP","BRIDGE_GROUP":"LTP","INTERFACE":"CTP","SVI":"CTP","VLAN":"CTP","VLAN_MEMBER":"CTP","ROUTER":"NODE"}
 
 
 class Receiver():

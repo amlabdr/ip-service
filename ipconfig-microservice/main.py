@@ -5,7 +5,7 @@ from network.network_config import Network_config
 def run():
     cfg = Config()
     Ctl_service = Controller_service(config = cfg)
-    network_config = Network_config()
+    network_config = Network_config(cfg)
     Ctl_service.subscribe2events(network_config)
 
 if __name__ == '__main__':
