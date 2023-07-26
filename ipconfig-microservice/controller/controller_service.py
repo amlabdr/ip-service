@@ -31,7 +31,7 @@ class Controller_service:
     def subscribe2events(self,network):
         logging.basicConfig(level=logging.INFO)
         topic = self.cfg.amqp_configuration_events_topic
-        url = self.cfg.controller_ip +":"+ self.cfg.controller_amqp_port
+        url = self.cfg.amqp_broker +":"+ self.cfg.controller_amqp_port
         logging.info("Agent will start lesstning for events from the controller")
         print("url: ", url)
         print("topic: ", topic)
