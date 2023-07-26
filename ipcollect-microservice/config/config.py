@@ -3,7 +3,8 @@ import os, logging
 
 class Config:
     def __init__(self):
-        self.controller_ip = os.environ.get('CONTROLLER','10.11.200.125')
+        self.controller_ip = os.environ.get('CONTROLLER','api-gateway')
+        self.amqp_broker = os.environ.get('AMQP_BROKER','activemq')
         self.controller_rest_port = os.environ.get('CONTROLLER_REST_PORT','8787')
         self.controller_amqp_port = os.environ.get('CONTROLLER_AMQP_PORT','5672')
         self.controller_rest_username = os.environ.get('CONTROLLER_REST_USERNAME', 'admin')

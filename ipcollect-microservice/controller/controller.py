@@ -15,7 +15,7 @@ class ControllerService:
                                     config.controller_ip +
                                     ':' +
                                     config.controller_rest_port)
-        self.controller_amqp_url = ( config.controller_ip +
+        self.controller_amqp_url = ( config.amqp_broker +
                                     ':' +
                                     config.controller_amqp_port)
         self.username = config.controller_rest_username

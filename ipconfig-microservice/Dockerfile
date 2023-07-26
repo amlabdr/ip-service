@@ -12,7 +12,7 @@ RUN pip3 install --no-cache-dir -r requirements.txt
 
 # Controller env variables
 #ENV CONTROLLER_URL 'http://10.11.200.125:8787'
-#ENV CONTROLLER_IP '10.11.200.125'
+#ENV CONTROLLER_IP 'api-gateway'
 ENV CONTROLLER_REST_USERNAME 'admin'
 ENV CONTROLLER_REST_PASSWORD 'admin'
 ENV CONTROLLER_REST_PORT '8787'
