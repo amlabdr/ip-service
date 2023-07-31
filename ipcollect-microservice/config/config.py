@@ -11,6 +11,7 @@ class Config:
         self.controller_rest_password = os.environ.get('CONTROLLER_REST_PASSWORD', 'admin')
         self.config_file_path = os.environ.get('CONFIG', 'config/config.json')
         self.network_targets = {}
+        self.netconf_port = os.environ.get('NETCONF_PORT','830')
         self.load_nodes()
 
     def load_nodes(self):
@@ -24,7 +25,6 @@ class Config:
             self.amqp_configuration_events_topic = config.get("AMQP_CONFIGURATION_EVENTS_TOPIC")
             self.amqp_topology_interface_status_topic = config.get("AMQP_TOPOLOGY_INTERFACE_STATUS_TOPIC")
             self.collection_repeat_timer = config.get("COLLECTION_REPEAT_TIMER")
-            self.net_targets = config.get("NET_TARGETS")
             self.netconf_xml_templates = config.get("NETCONF_XML_TEMPLATES")
             self.controller_rest_port = config.get("CONTROLLER_REST_PORT")
         logging.info('reading network targets from file successful')
@@ -47,7 +47,6 @@ class Config:
             AMQP Configuration Events Topic: {self.amqp_configuration_events_topic},
             AMQP Topology Interface Status Topic: {self.amqp_topology_interface_status_topic},
             Collection Repeat Timer: {self.collection_repeat_timer},
-            Net Targets: {self.net_targets},
             Netconf XML Templates: {self.netconf_xml_templates}
         )
         """
