@@ -56,7 +56,8 @@ fi
 
 # Build image
 if [ "$BUILD_IMAGE" = true ]; then
-    docker build -t "multiverse-ipcollect" .
+    docker build --build-arg http_proxy=${http_proxy}\
+        --build-arg https_proxy=${https_proxy} -t "multiverse-ipcollect" .
 fi
 
 # Push the tagged image to Docker Hub
