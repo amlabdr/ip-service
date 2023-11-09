@@ -28,7 +28,7 @@ class NotificationSubscriber:
     def subscribe_to_interface_status(self):
         for target_node in self.config.network_targets.values():
             with manager.connect(host = target_node['mgmtIp'], 
-                                 port = os.environ.get('NETCONF_PORT'),
+                                 port = self.config.netconf_port,
                                  username = os.environ.get('NETCONF_USER'),
                                  password = os.environ.get('NETCONF_PASSWORD'),
                                  hostkey_verify = False) as m:

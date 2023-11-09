@@ -56,7 +56,8 @@ fi
 
 # Build image
 if [ "$BUILD_IMAGE" = true ]; then
-    docker build -t "multiverse-ipcollect" .
+    docker build --build-arg http_proxy=${http_proxy}\
+        --build-arg https_proxy=${https_proxy} -t "multiverse-ipcollect" .
 fi
 
 # Push the tagged image to Docker Hub
@@ -65,9 +66,15 @@ if [ "$PUSH_IMAGE" = true ]; then
     docker push multiversenms/ipcollect:latest
 fi
 
+echo "http_proxy=$http_proxy"
+
 # Run the local image
 if [ "$RUN_IMAGE" = true ]; then
-    docker run -i --rm --name "multiverse-ipcollect" -p "8071:8071" -e "CONTROLLER=10.11.200.125" "multiverse-ipcollect"
+    docker run -i --rm --name "multiverse-ipcollect"\
+        -p "8071:8071" -e "CONTROLLER=10.11.200.123"\
+        -e "AMQP_BROKER=10.11.200.123" -e "NETCONF_PORT=830"\
+        -e "NETCONF_USER=ocnos" -e "NETCONF_PASSWORD=ocnos"\
+        -e "http_proxy=$http_proxy" -e "https_proxy=$https_proxy" "multiverse-ipcollect"
 fi
 
 # Log out from Docker Hub

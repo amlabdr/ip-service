@@ -3,14 +3,16 @@ import os, logging
 
 class Config:
     def __init__(self):
-        self.controller_ip = os.environ.get('CONTROLLER','api-gateway')
-        self.amqp_broker = os.environ.get('AMQP_BROKER','activemq')
+        self.controller_ip = os.environ.get('CONTROLLER','10.11.200.125')
+        self.amqp_broker = os.environ.get('AMQP_BROKER','10.11.200.125')
+        self.controller_auth_port = os.environ.get('CONTROLLER_AUTH_PORT','8888')
         self.controller_rest_port = os.environ.get('CONTROLLER_REST_PORT','8787')
         self.controller_amqp_port = os.environ.get('CONTROLLER_AMQP_PORT','5672')
-        self.controller_rest_username = os.environ.get('CONTROLLER_REST_USERNAME', 'admin')
-        self.controller_rest_password = os.environ.get('CONTROLLER_REST_PASSWORD', 'admin')
+        self.controller_rest_username = os.environ.get('CONTROLLER_REST_USERNAME', 'ip')
+        self.controller_rest_password = os.environ.get('CONTROLLER_REST_PASSWORD', 'ip123$')
         self.config_file_path = os.environ.get('CONFIG', 'config/config.json')
         self.network_targets = {}
+        self.netconf_port = os.environ.get('NETCONF_PORT','830')
         self.load_nodes()
 
     def load_nodes(self):
@@ -24,7 +26,6 @@ class Config:
             self.amqp_configuration_events_topic = config.get("AMQP_CONFIGURATION_EVENTS_TOPIC")
             self.amqp_topology_interface_status_topic = config.get("AMQP_TOPOLOGY_INTERFACE_STATUS_TOPIC")
             self.collection_repeat_timer = config.get("COLLECTION_REPEAT_TIMER")
-            self.net_targets = config.get("NET_TARGETS")
             self.netconf_xml_templates = config.get("NETCONF_XML_TEMPLATES")
             self.controller_rest_port = config.get("CONTROLLER_REST_PORT")
         logging.info('reading network targets from file successful')
@@ -47,7 +48,6 @@ class Config:
             AMQP Configuration Events Topic: {self.amqp_configuration_events_topic},
             AMQP Topology Interface Status Topic: {self.amqp_topology_interface_status_topic},
             Collection Repeat Timer: {self.collection_repeat_timer},
-            Net Targets: {self.net_targets},
             Netconf XML Templates: {self.netconf_xml_templates}
         )
         """

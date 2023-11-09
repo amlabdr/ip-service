@@ -1,5 +1,5 @@
 import time 
-import logging
+from keycloak.keycloak_openid import KeycloakOpenID
 import jwt
 
 from net.notification_subscriber import NotificationSubscriber
@@ -41,18 +41,18 @@ class ControllerService:
         self.notification_subscriber.subscribe_to_interface_status()
     
     def login(self):
-        login_url = self.controller_rest_url+'/api/login/user'
-        response = self.request.post_request_json(login_url, data={'username': self.username, 'password': self.password}, token='')
-        if response.status_code == 200:
-            self.token = response.json().get('token')
-            decoded_token = jwt.decode(self.token, options={'verify_signature': False})
-            self.token_acquired_time = decoded_token.get('iat')
+        login_url = "http://"+self.config.controller_ip+":"+self.config.controller_auth_port
+        keycloak_openid = KeycloakOpenID(server_url=login_url,
+                                 client_id="multiverse-access",
+                                 realm_name="multiverse")
+        self.token = keycloak_openid.token(self.username, self.password)
+        print(type(self.token))
+        print(self.token)
+        self.token_acquired_time = time.time()
 
     def token_is_expired(self):
         if self.token:
-            decoded_token = jwt.decode(self.token, options={'verify_signature': False})
-            expiry_time = decoded_token.get('exp')
-            if time.time() >= expiry_time:
+            if time.time() >= self.token_acquired_time + self.token['expires_in']:
                 return True
         return False
 
@@ -69,7 +69,7 @@ class ControllerService:
             response
         """
         self.get_token()
-        response = self.request.post_request_file(url,filename = filename, token = self.token)
+        response = self.request.post_request_file(url,filename = filename, token = self.token['access_token'])
         
         return response
     
@@ -81,7 +81,7 @@ class ControllerService:
             response
         """
         self.get_token()
-        response = self.request.post_request_json(url,data = json_data, token = self.token)
+        response = self.request.post_request_json(url,data = json_data, token = self.token['access_token'])
         
         return response
     
@@ -93,6 +93,6 @@ class ControllerService:
             response
         """
         self.get_token()
-        response = self.request.get_request(url, token = self.token)
+        response = self.request.get_request(url, token = self.token['access_token'])
         
         return response

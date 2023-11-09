@@ -123,7 +123,7 @@ class Reader:
     def connect_to_netconf_server(self, node):
         try:
             return manager.connect_ssh(host = node['mgmtIp'],
-                                port = 830,
+                                port = self.config.netconf_port,
                                 username = os.environ.get('NETCONF_USER'),
                                 password = os.environ.get('NETCONF_PASSWORD'),
                                 hostkey_verify = False)
