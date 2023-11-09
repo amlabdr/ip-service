@@ -5,9 +5,9 @@ class Config:
     def __init__(self):
         self.controller_ip = os.environ.get('CONTROLLER','10.11.200.125')
         self.amqp_broker = os.environ.get('AMQP_BROKER','10.11.200.125')
-        self.controller_auth_port = os.environ.get('CONTROLLER_AUTH_PORT','8888')
-        self.controller_rest_port = os.environ.get('CONTROLLER_REST_PORT','8787')
-        self.controller_amqp_port = os.environ.get('CONTROLLER_AMQP_PORT','5672')
+        #self.controller_auth_port = os.environ.get('CONTROLLER_AUTH_PORT','8888')
+        #self.controller_rest_port = os.environ.get('CONTROLLER_REST_PORT','8787')
+        #self.controller_amqp_port = os.environ.get('CONTROLLER_AMQP_PORT','5672')
         self.controller_rest_username = os.environ.get('CONTROLLER_REST_USERNAME', 'ip')
         self.controller_rest_password = os.environ.get('CONTROLLER_REST_PASSWORD', 'ip123$')
         self.config_file_path = os.environ.get('CONFIG', 'config/config.json')
@@ -28,6 +28,8 @@ class Config:
             self.collection_repeat_timer = config.get("COLLECTION_REPEAT_TIMER")
             self.netconf_xml_templates = config.get("NETCONF_XML_TEMPLATES")
             self.controller_rest_port = config.get("CONTROLLER_REST_PORT")
+            self.controller_auth_port = config.get("CONTROLLER_AUTH_PORT")
+            self.controller_amqp_port = config.get("CONTROLLER_AMQP_PORT")
         logging.info('reading network targets from file successful')
 
     def __str__(self):
