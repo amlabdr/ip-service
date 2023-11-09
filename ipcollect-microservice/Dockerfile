@@ -17,6 +17,7 @@ RUN pip3 install --no-cache-dir -r requirements.txt
 #ENV CONTROLLER_REST_USERNAME='admin'
 #ENV CONTROLLER_REST_PASSWORD='admin'
 #ENV CONTROLLER_REST_PORT='8787'
+#ENV CONTROLLER_AUTH_PORT='8888'
 #ENV CONTROLLER_AMQP_PORT='5672'
 # Controller prefixes
 #ENV CONTROLLER_LOGIN_PREFIX='/api/login/user'
